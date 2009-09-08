@@ -6,6 +6,8 @@ Hyrax 'Shrew' Build  Project
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.
 
+* Start Here *
+
 The main directory contains configure.ac and Makefile.am (along with
 this README and the build_hyrax script) files which are processed
 using autoreconf -i to build configure and Makefile.in files
@@ -30,12 +32,23 @@ Note: that once 'make hyrax' is run, it's easy to re-run configure
 using ./config.status or the Makefile targets in the various C++
 source directories.
 
+* Organization *
+
+Hyrax is made up of three 'architectural' pieces, the OLFS, libdap,
+the BES and a collection of modules that are loaded into the BES. The
+OLFS, libdap and BES are in the 'src' directory and the BES modules
+are in 'src/modules'.
+
+* Customizing the Build *
+
 If you look n the Makefile.am, you'll see that build assumes that
 hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
 those to the configure scripts in the src/modules directory. If you
 want to have those configure scripts look for the HDF4, ..., packages
 and not use the --with-* option, just set the Makefile variable to
 nothing.
+
+* Background *
 
 How it works: The build first runs autoreconf -i; configure; make and
 make install on libdap and then BES. Then it descends into src/modules

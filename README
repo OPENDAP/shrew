@@ -1,0 +1,50 @@
+
+$Id$
+
+Hyrax 'Shrew' Build  Project
+
+In the following, $shrew is the full pathname of the 'main' directory
+- the directory that contains this README file.
+
+The main directory contains configure.ac and Makefile.am (along with
+this README and the build_hyrax script) files which are processed
+using autoreconf -i to build configure and Makefile.in files
+(respectively). Once those are built, run configure to build a
+Makefile and then use the 'hyrax' target of the Makefile to build the
+server. You should also set PATH so that it searches '$shrew/bin' first
+so that the newly-built libdap and BES will be found during the build
+process. Since you're likely a developer, it's wise to set $prefix to
+'$shrew' as well. Synopsis:
+
+export prefix=`pwd`
+export PATH=$prefix/bin$PATH
+autoreconf -i
+./configure
+make hyrax
+
+The script 'build_hyrax' does this for you. If you source that instead
+of executing it, the modified PATH and the '$prefix' variable will be
+left in you shell.
+
+Note: that once 'make hyrax' is run, it's easy to re-run configure
+using ./config.status or the Makefile targets in the various C++
+source directories.
+
+If you look n the Makefile.am, you'll see that build assumes that
+hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
+those to the configure scripts in the src/modules directory. If you
+want to have those configure scripts look for the HDF4, ..., packages
+and not use the --with-* option, just set the Makefile variable to
+nothing.
+
+How it works: The build first runs autoreconf -i; configure; make and
+make install on libdap and then BES. Then it descends into src/modules
+and builds each module, running autoreconf -i; configure; make and
+make install. Because libdap and BES must be built and installed
+first, they are treated specially; the modules are built in any order
+(and the operations are carried out differently then for libdap and
+the BES - autoreconf is first run for each module, then configure for
+each and then make and so on). Adding a new module is simple, just
+link it into the modules directory and then add it to the Makefile.am
+SUBDIRS variable and the AC_CONFIG_SUBDIRS macro in configure.ac.
+

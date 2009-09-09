@@ -28,10 +28,8 @@ hyrax-base:
 
 hyrax-modules:
 	    (cd src/modules && autoreconf -i \
-		&& ./configure $(config_params)) \
-	    && $(MAKE) $(MFLAGS) -C $$d \
-	    && $(MAKE) $(MFLAGS) -C $$d install; \
-	done
+		&& ./configure $(config_params) \
+	        && $(MAKE) $(MFLAGS) -C install)
 
 hyrax: hyrax-base hyrax-modules
 

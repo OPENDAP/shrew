@@ -12,25 +12,46 @@ The main directory contains configure.ac and Makefile.am (along with
 this README and the build_hyrax script) files which are processed
 using autoreconf -i to build configure and Makefile.in files
 (respectively). Once those are built, run configure to build a
-Makefile and then use the 'hyrax' target of the Makefile to build the
+Makefile and then use the 'world' target of the Makefile to build the
 server. You should also set PATH so that it searches '$shrew/bin' first
 so that the newly-built libdap and BES will be found during the build
 process. Since you're likely a developer, it's wise to set $prefix to
-'$shrew' as well. Synopsis:
+'$shrew' as well. 
+
+Synopsis:
 
 export prefix=`pwd`
 export PATH=$prefix/bin$PATH
 autoreconf -i
 ./configure
-make hyrax
+make world
 
 The script 'build_hyrax' does this for you. If you source that instead
 of executing it, the modified PATH and the '$prefix' variable will be
 left in you shell.
 
-Note: that once 'make hyrax' is run, it's easy to re-run configure
+Note: that once 'make world' is run, it's easy to re-run configure
 using ./config.status or the Makefile targets in the various C++
-source directories.
+source directories. Also, there are a number of other targets that can
+be used to build less than the 'world' target. Other targets besides
+the standard autoconf targets are:
+
+autoreconf: Run autoreconf in all the subdirs
+hyrax: Build the bes daemon and OLFS (Build == configure, make, make install)
+daemon: Build the bes daemon
+libdap: Build libdap
+bes: Build bes
+modules: Build all of the bes modules
+bes-conf: For each module, run the bes-conf target.
+
+Standard targets that are useful:
+
+check: run the tests in all of the subdirectories
+clean: run the clean target in all of the subdirs
+distclean: This target sets the build so that you can erase various
+things made with autoreconf. 
+all, or just 'make': runs make in all of the C++ directories
+install: Runs install in all of the directories.
 
 * Organization *
 

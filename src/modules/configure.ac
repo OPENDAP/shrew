@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a c...
 
 AC_PREREQ([2.62])
-AC_INIT([hyrax], [1.6])
-AC_CONFIG_AUX_DIR(conf)
+AC_INIT([hyrax modules], [1.6])
+AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AC_CANONICAL_SYSTEM

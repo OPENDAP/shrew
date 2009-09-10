@@ -11,7 +11,7 @@ netcdf = --with-netcdf=/usr/local/netcdf
 hdf4 = --with-hdf4=/usr/local/hdf4
 hdf5 = --with-hdf5=/usr/local/hdf5
 
-config_params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
+params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 
 # The src/* directories are repeated here because the first builds
 # are special; we must run configure, make and make install first for
@@ -19,24 +19,48 @@ config_params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 # like 'make' are normal automake targets and will work once the
 # initial build is done. I think...
 
-hyrax-base:
-	for d in src/libdap src/bes; do \
-	    (cd $$d && autoreconf -i && ./configure $(prefix)) \
-	    && $(MAKE) $(MFLAGS) -C $$d \
-	    && $(MAKE) $(MFLAGS) -C $$d install; \
-	done
+world: autoreconf hyrax
 
-hyrax-modules:
-	    (cd src/modules && autoreconf -i \
-		&& ./configure $(config_params) \
-	        && $(MAKE) $(MFLAGS) -C install)
+hyrax: daemon olfs install-data-local
 
-hyrax: hyrax-base hyrax-modules
+olfs: olfs-compile olfs-install
+
+olfs-compile:
+	cd src/olfs && ant
+
+olfs-install:
+	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps
+
+daemon: libdap bes modules
+
+libdap:
+	cd src/$@ && ./configure $(params)
+	$(MAKE) $(MFLAGS) -C src/$@ install
+
+bes:
+	cd src/$@ && ./configure $(params)
+	$(MAKE) $(MFLAGS) -C src/$@ install
+
+modules:
+	cd src/$@ && ./configure $(params)
+	$(MAKE) $(MFLAGS) -C src/$@ install
+
+bes-conf:
+	$(MAKE) $(MFLAGS) -C src/modules $@
 
 autoreconf:
-	for d in $(SUBDIRS); do (cd $$d && autoreconf -i); done
+	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
 
 rpm:
-	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
+	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 
-.PHONY: hyrax hyrax-base hyrax-modules autoconf rpm
+clean-local:
+	cd src/olfs && ant clean
+
+install-data-local: bes-conf
+	echo "Bes will run as user:" $(bes_user) " group:" $(bes_group)
+	cat etc/bes/bes.conf | sed -e "s/user_name/$(bes_user)/g" \
+				-e "s/group_name/$(bes_group)/g" > tmp.conf
+	mv tmp.conf etc/bes/bes.conf
+
+.PHONY: world hyrax daemon libdap bes modules bes-conf autoconf rpm

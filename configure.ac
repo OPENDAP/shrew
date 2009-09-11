@@ -13,6 +13,7 @@ LT_INIT([dlopen])
 
 bes_user=`whoami`
 AC_SUBST([bes_user])
+AC_MSG_NOTICE(Set the BES user to $bes_user)
 
 if groups | grep 'wheel'
 then
@@ -25,9 +26,26 @@ else
 fi
 
 AC_SUBST([bes_group])
+AC_MSG_NOTICE(Set the BES group to $bes_group)
 
-CATALINA_HOME=tomcat
-AC_SUBST([CATALINA_HOME])
+if test -d tomcat -o -L tomcat
+then
+    CATALINA_HOME=tomcat
+elif ls -1d apache-tomcat-*
+then
+    tc=`ls -1d apache-tomcat-*`
+    CATALINA_HOME=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
+else
+    AC_MSG_WARN(I could not find a local tomcat servlet engine directory)
+fi
+
+if test -n "$CATALINA_HOME"
+then
+    AC_SUBST([CATALINA_HOME])
+    AC_MSG_NOTICE(Set the CATALINA_HOME to $CATALINA_HOME)
+else
+    AC_MSG_WARN(I did not set CATALINA_HOME to any value)
+fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

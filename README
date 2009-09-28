@@ -82,3 +82,71 @@ each and then make and so on). Adding a new module is simple, just
 link it into the modules directory and then add it to the Makefile.am
 SUBDIRS variable and the AC_CONFIG_SUBDIRS macro in configure.ac.
 
+* About the Externally linked projects *
+
+This 'project' is made up of a number of projects needed to build an
+instance of hyrax. Each external project is listed in the text file
+'externals.txt' This project is feed to the svn:externals property as
+the property's value.
+
+* Making a copy of shrew that uses a particular set of revisions  *
+
+1. Copy the shrew project without copying the linked (external)
+projects using 
+
+    svn copy --ignore-externals $svn/trunk/shrew <destination>
+
+Then checkout a copy of <destination> and edit the file externals.txt,
+saving the result to something like 'externals.<date>'. Then set the
+value of the svn:externals property to that new file.
+
+    svn propedit svn:externals externals.<date>
+
+The documentation claims it's better to use propedit instead of
+propset.
+
+But how do you edit the externals file? Using a text editor, change
+the lines like:
+
+    ^/trunk/libdap src/libdap
+
+so that the first part is the revision you want to be linked to the
+second part. Unless you are doing something really fancy, don't edit
+the second part. To make the source revision a specific revision, use
+svn info or the Trac browse feature to find the specific revision
+number and add it like this:
+
+    ^/trunk/libdap@21560 src/libdap
+
+Now, no matter what happens to the trunk/libdap code, this instance of
+shrew will always checkout version 21560 of libdap. 
+
+If instead you want to make this instance of shrew on a branch, you
+might want it to grab the newest code of a specific branch of libdap.
+In that case, replace ^/trunk/libdap with the path to the branch:
+
+    ^/branch/libdap/4.0.0 src/libdap
+
+Note: The script set_externals.sh can be used to take the template
+'externals.txt' file and build a new file where the SVN directories
+all have explicit revision numbers matching the stuff in the current
+checkout. The usage is 
+
+    set_externals.sh < externals.txt > explicit_revisions.txt
+
+Then you can make the tag and use svn's propset/propedit to wire up
+the tag to link to an explicit set of revisions without hunting down
+the numbers by hand. 
+
+I think it's a good idea to add/checkin the explicit_revisions.txt
+file to the tagged/branched directory as a simple way to document
+what's been done.
+
+It's possible to skip using the 'externals.txt' file and go to svn
+directly for the list of external links:
+
+    svn pg svn:externals | set_externals > explicit_revisions.txt
+
+But please update the externals.txt file as new directories are linked
+in, so that we have a record of what's supposed to be in the 'shrew'
+project. 

@@ -1,0 +1,12 @@
+^/trunk/libdap src/libdap
+^/trunk/bes src/bes
+^/trunk/dap-server src/modules/dap-server
+^/trunk/freeform_handler src/modules/freeform_handler
+^/trunk/fileout_netcdf src/modules/fileout_netcdf
+^/trunk/netcdf_handler src/modules/netcdf_handler
+^/trunk/hdf4_handler src/modules/hdf4_handler
+^/trunk/hdf5_handler src/modules/hdf5_handler
+^/trunk/ncml_module src/modules/ncml_module
+^/trunk/wcs_gateway_module src/modules/wcs_gateway_module
+^/trunk/wcs_module src/modules/wcs_module
+^/trunk/olfs src/olfs

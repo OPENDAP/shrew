@@ -36,9 +36,13 @@ source directories. Also, there are a number of other targets that can
 be used to build less than the 'world' target. Other targets besides
 the standard autoconf targets are:
 
+world: Run the autoreconf and then grind through the whole build, but
+not the tests.
 autoreconf: Run autoreconf in all the subdirs
 hyrax: Build the bes daemon and OLFS (Build == configure, make, make install)
+hyrax-check: Test the whole server. no build, just testing
 daemon: Build the bes daemon
+daemon-check: Test the BES. Again, no build, just testing
 libdap: Build libdap
 bes: Build bes
 modules: Build all of the bes modules

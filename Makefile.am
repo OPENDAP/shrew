@@ -22,6 +22,7 @@ params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 world: autoreconf hyrax
 
 hyrax: daemon olfs install-data-local
+hyrax-check: daemon-check olfs-check
 
 olfs: olfs-compile olfs-install
 
@@ -31,7 +32,13 @@ olfs-compile:
 olfs-install:
 	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps
 
+# How do we run the OLFS-specific tests?
+olfs-check:
+	echo "Don't know how to check the complete Hyrax server"
+
 daemon: libdap bes modules
+daemon-check: check
+	$(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests
 
 libdap:
 	cd src/$@ && ./configure $(params)

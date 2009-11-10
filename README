@@ -98,16 +98,20 @@ the property's value.
 1. Copy the shrew project without copying the linked (external)
 projects using 
 
-    svn copy --ignore-externals $svn/trunk/shrew <destination>
+    svn copy $svn/trunk/shrew <destination>
 
-Then checkout a copy of <destination> and edit the file externals.txt,
-saving the result to something like 'externals.<date>'. Then set the
-value of the svn:externals property to that new file.
+Then checkout a copy of <destination> using --ignore-externals so that
+you can change the external links the project uses (unless you want to
+use the trunk revisions).
 
-    svn propedit svn:externals externals.<date>
+    svn checkout --ignore-revisions <destination> <optional dir name>
 
-The documentation claims it's better to use propedit instead of
-propset.
+... and edit the file externals.txt, and checking the result into svn
+on the branch or tag. If you need to edit the copy on the trunk,
+replace the .txt extension with a date. Then set the value of the
+svn:externals property to that new file.
+
+    svn propset svn:externals --file externals.<date>
 
 But how do you edit the externals file? Using a text editor, change
 the lines like:

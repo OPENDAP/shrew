@@ -21,7 +21,7 @@ params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 
 world: autoreconf hyrax
 
-hyrax: daemon olfs install-data-local
+hyrax: daemon olfs
 hyrax-check: daemon-check olfs-check
 
 olfs: olfs-compile olfs-install
@@ -36,9 +36,11 @@ olfs-install:
 olfs-check:
 	echo "Don't know how to check the complete Hyrax server"
 
-daemon: libdap bes modules
+daemon: libdap bes modules install-data-local
 daemon-check: check
+	sudo besctl start
 	$(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests
+	sudo besctl stop
 
 libdap:
 	cd src/$@ && ./configure $(params)
@@ -66,8 +68,10 @@ clean-local:
 
 install-data-local: bes-conf
 	echo "Bes will run as user:" $(bes_user) " group:" $(bes_group)
-	cat etc/bes/bes.conf | sed -e "s/user_name/$(bes_user)/g" \
-				-e "s/group_name/$(bes_group)/g" > tmp.conf
+	cat etc/bes/bes.conf \
+		| sed -e "s/user_name/$(bes_user)/g" \
+		      -e "s/group_name/$(bes_group)/g" \
+		      -e "s/\./bes\.log/var/bes\.log/g" > tmp.conf
 	mv tmp.conf etc/bes/bes.conf
 
 .PHONY: world hyrax daemon libdap bes modules bes-conf autoconf rpm

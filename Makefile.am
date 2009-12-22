@@ -7,9 +7,12 @@ EXTRA_DIST =
 SUBDIRS = src/libdap src/bes src/modules
 
 prefix = --prefix=$(abs_top_builddir)
-netcdf = --with-netcdf=/usr/local/netcdf
-hdf4 = --with-hdf4=/usr/local/hdf4
-hdf5 = --with-hdf5=/usr/local/hdf5
+netcdf = 
+#--with-netcdf=/usr/local/netcdf
+hdf4 = 
+#--with-hdf4=/usr/local/hdf4
+hdf5 = 
+#--with-hdf5=/usr/local/hdf5
 
 params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 
@@ -70,8 +73,7 @@ install-data-local: bes-conf
 	echo "Bes will run as user:" $(bes_user) " group:" $(bes_group)
 	cat etc/bes/bes.conf \
 		| sed -e "s/user_name/$(bes_user)/g" \
-		      -e "s/group_name/$(bes_group)/g" \
-		      -e "s/\./bes\.log/var/bes\.log/g" > tmp.conf
+		      -e "s/group_name/$(bes_group)/g" > tmp.conf
 	mv tmp.conf etc/bes/bes.conf
 
 .PHONY: world hyrax daemon libdap bes modules bes-conf autoconf rpm

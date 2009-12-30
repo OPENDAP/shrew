@@ -32,4 +32,4 @@ rpm:
 cccc:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
-.PHONY: bes-conf rpm cccc
+.PHONY: install modules-check bes-conf rpm cccc

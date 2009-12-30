@@ -17,12 +17,11 @@ params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 # are special; we must run configure, make and make install first for
 # libdap and then for bes and then for the modules. Other targets are
 # like 'make' are normal automake targets and will work once the
-# initial build is done. I think...
+# initial build is done.
 
 world: autoreconf hyrax
 
 hyrax: daemon olfs
-hyrax-check: check daemon-check olfs-check
 
 olfs: olfs-compile olfs-install
 
@@ -38,9 +37,8 @@ olfs-check:
 
 daemon: libdap bes modules install-data-local
 
-# redefine the automake 'check' target
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
-	
+
 libdap:
 	cd src/$@ && ./configure $(prefix)
 	if $(MAKE) $(MFLAGS) -C src/libdap install; then \
@@ -106,4 +104,7 @@ install-data-local: bes-conf
 		      -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" > tmp.conf
 	mv tmp.conf etc/bes/bes.conf
 
-.PHONY: world hyrax daemon libdap bes modules bes-conf autoconf rpm cccc
+.PHONY: world hyrax olfs olfs-compile olfs-install olfs-check
+.PHONY: daemon daemon-check libdap libdap-check bes bes-check 
+.PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
+.PHONY: rpm cccc

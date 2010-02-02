@@ -7,9 +7,9 @@ EXTRA_DIST =
 SUBDIRS = src/libdap src/bes src/modules
 
 prefix = --prefix=$(abs_top_builddir)
-netcdf = --with-netcdf=/usr/local/netcdf
-hdf4 = --with-hdf4=/usr/local/hdf4
-hdf5 = --with-hdf5=/usr/local/hdf5
+netcdf = 
+hdf4 = 
+hdf5 = 
 
 params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 

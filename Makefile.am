@@ -75,14 +75,11 @@ modules:
 
 modules-check:
 	$(MAKE) $(MFLAGS) -C src/modules modules-check
-	
+
 bes-configuration-tests:
 	besctl start
 	-$(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests
 	besctl stop
-
-bes-conf:
-	$(MAKE) $(MFLAGS) -C src/modules $@
 
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
@@ -96,7 +93,7 @@ cccc:
 clean-local:
 	cd src/olfs && ant clean
 
-install-data-local: bes-conf
+install-data-local: 
 	@echo "Bes will run as user:" $(bes_user) " group:" $(bes_group)
 	cat etc/bes/bes.conf \
 		| sed -e "s/user_name/$(bes_user)/g" \

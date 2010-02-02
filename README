@@ -111,7 +111,7 @@ on the branch or tag. If you need to edit the copy on the trunk,
 replace the .txt extension with a date. Then set the value of the
 svn:externals property to that new file.
 
-    svn propset svn:externals --file externals.<date>
+    svn propset svn:externals --file externals.<date> .
 
 But how do you edit the externals file? Using a text editor, change
 the lines like:

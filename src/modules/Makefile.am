@@ -23,13 +23,10 @@ modules-check:
 		fi; \
 	done
 
-bes-conf:
-	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
-
 rpm:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
 cccc:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
-.PHONY: install modules-check bes-conf rpm cccc
+.PHONY: install modules-check rpm cccc

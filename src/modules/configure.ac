@@ -1,7 +1,7 @@
 #                 -*- Autoconf -*-
 # Process this file with autoconf to produce a c...
 
-AC_PREREQ([2.62])
+AC_PREREQ([2.63])
 AC_INIT([hyrax modules], [1.6])
 AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
@@ -11,6 +11,6 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
-AC_CONFIG_SUBDIRS([dap-server netcdf_handler hdf4_handler hdf5_handler freeform_handler fileout_netcdf])
+AC_CONFIG_SUBDIRS([dap-server netcdf_handler hdf4_handler hdf5_handler freeform_handler fileout_netcdf ncml_module])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

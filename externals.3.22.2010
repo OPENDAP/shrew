@@ -1,0 +1,13 @@
+^/branch/libdap/3.10.0 src/libdap
+^/branch/bes/3.8.0 src/bes
+^/branch/dap-server/4.0 src/modules/dap-server
+^/branch/freeform_handler/3.8.0 src/modules/freeform_handler
+^/branch/fileout_netcdf/1.0 src/modules/fileout_netcdf
+^/branch/netcdf_handler/3.9.0 src/modules/netcdf_handler
+^/branch/hdf4_handler/3.8.0 src/modules/hdf4_handler
+^/branch/hdf5_handler/1.4.0 src/modules/hdf5_handler
+^/branch/wcs_gateway_module/1.1.0 src/modules/wcs_gateway_module
+^/branch/ncml_module/1.0.0 src/modules/ncml_module
+^/branch/olfs/1.6.0 src/olfs
+^/branch/nbuilds/shrew-1.6 nbuilds
+

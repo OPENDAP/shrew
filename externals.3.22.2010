@@ -9,5 +9,5 @@
 ^/branch/wcs_gateway_module/1.1.0 src/modules/wcs_gateway_module
 ^/branch/ncml_module/1.0.0 src/modules/ncml_module
 ^/branch/olfs/1.6.0 src/olfs
-^/branch/nbuilds/shrew-1.6 nbuilds
+^/tags/nbuilds/shrew-1.6 nbuilds
 

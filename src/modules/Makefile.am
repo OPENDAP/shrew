@@ -26,6 +26,9 @@ modules-check:
 rpm:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
+rpm-nodeps:
+	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
+
 cccc:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 

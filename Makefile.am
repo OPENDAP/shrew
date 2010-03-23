@@ -87,6 +87,9 @@ autoreconf:
 rpm:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 
+rpm-nodeps:
+	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
+
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 

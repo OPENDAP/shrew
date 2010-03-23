@@ -5,7 +5,7 @@ EXTRA_DIST =
 SUBDIRS = dap-server netcdf_handler hdf4_handler hdf5_handler \
 	freeform_handler fileout_netcdf ncml_module
 
-install:
+modules-install:
 	for dir in $(SUBDIRS); do \
 		if $(MAKE) $(MFLAGS) -C $$dir install; then \
 	    	echo "`date`: $$dir: install: 0" >> build.log; \

@@ -7,9 +7,9 @@ EXTRA_DIST =
 SUBDIRS = src/libdap src/bes src/modules
 
 prefix = --prefix=$(abs_top_builddir)
-netcdf = 
-hdf4 = 
-hdf5 = 
+netcdf = --with-netcdf=/usr/local/netcdf
+hdf4 = --with-hdf4=/usr/local/hdf4
+hdf5 = --with-hdf5=/usr/local/hdf5
 
 params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 
@@ -71,7 +71,7 @@ bes-check:
 
 modules:
 	cd src/$@ && ./configure $(params)
-	$(MAKE) $(MFLAGS) -C src/$@ install
+	$(MAKE) $(MFLAGS) -C src/$@ modules-install
 
 modules-check:
 	$(MAKE) $(MFLAGS) -C src/modules modules-check
@@ -97,7 +97,7 @@ clean-local:
 	cd src/olfs && ant clean
 
 install-data-local: 
-	@echo "Bes will run as user:" $(bes_user) " group:" $(bes_group)
+	@echo "Bes will run as user " $(bes_user) " group " $(bes_group)
 	cat etc/bes/bes.conf \
 		| sed -e "s/user_name/$(bes_user)/g" \
 		      -e "s/group_name/$(bes_group)/g" \

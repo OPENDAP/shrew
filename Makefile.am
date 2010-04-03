@@ -11,7 +11,7 @@ netcdf = --with-netcdf=/usr/local/netcdf
 hdf4 = --with-hdf4=/usr/local/hdf4
 hdf5 = --with-hdf5=/usr/local/hdf5
 
-params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
+params = $(prefix)
 
 # The src/* directories are repeated here because the first builds
 # are special; we must run configure, make and make install first for
@@ -21,15 +21,23 @@ params = $(prefix) $(netcdf) $(hdf4) $(hdf5)
 
 world: autoreconf hyrax
 
+# check-root-privileges 
+
 hyrax: daemon olfs
 
+# check-root-privileges 
+
 olfs: olfs-compile olfs-install
+
+# check-root-privileges 
 
 olfs-compile:
 	cd src/olfs && ant
 
-olfs-install:
+olfs-install: check-root-privileges
 	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps
+
+# $(MAKE) check-root-privileges 
 
 # How do we run the OLFS-specific tests?
 olfs-check:
@@ -104,7 +112,13 @@ install-data-local:
 		      -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" > tmp.conf
 	mv tmp.conf etc/bes/bes.conf
 
+check-root-privileges:
+	if [[ $EUID -ne 0 ]]; then \
+		echo "This operation requires root privileges"; \
+		exit 1; \
+	fi
+
 .PHONY: world hyrax olfs olfs-compile olfs-install olfs-check
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
-.PHONY: rpm cccc
+.PHONY: rpm cccc check-root-privileges

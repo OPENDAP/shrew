@@ -113,10 +113,11 @@ install-data-local:
 	mv tmp.conf etc/bes/bes.conf
 
 check-root-privileges:
-	if [[ $EUID -ne 0 ]]; then \
-		echo "This operation requires root privileges"; \
-		exit 1; \
-	fi
+	@echo "Not checking privliges. We should make this work at somepoint..."
+#	if [[ $EUID -ne 0 ]]; then \
+#		echo "This operation requires root privileges"; \
+#		exit 1; \
+#	fi
 
 .PHONY: world hyrax olfs olfs-compile olfs-install olfs-check
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 

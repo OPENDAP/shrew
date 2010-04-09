@@ -6,6 +6,16 @@ Hyrax 'Shrew' Build  Project
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.
 
+* Contents *
+
+  * Start Here *
+  * Organization *
+  * Customizing the Build *
+  * Debug Build *
+  * Background *
+  * About the Externally linked projects *
+  * Making a copy of shrew that uses a particular set of revisions  *
+
 * Start Here *
 
 The main directory contains configure.ac and Makefile.am (along with
@@ -71,7 +81,31 @@ hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
 those to the configure scripts in the src/modules directory. If you
 want to have those configure scripts look for the HDF4, ..., packages
 and not use the --with-* option, just set the Makefile variable to
-nothing.
+nothing. 
+
+The ncml_module needs a version of ICU.  If this is not in /usr/local
+or /usr, the user can specify the installed ICU prefix using:
+
+   --with-icu-prefix=/path/to/icu/prefix
+
+Note: The user will also likely need to set LD_LIBRARY_PATH or 
+DYLD_LIBRARY_PATH to include the ICU prefix/lib directory.  Please 
+see the ncml_module INSTALL file for more info.
+
+* Debug Build *
+
+The entire shrew project can be built with debug flags (-g3, -O0, 
+and others) by running the top level configure with --enable-debug
+set:
+
+	./configure --enable-debug
+
+This is highly useful for developers who wish to use shrew as the
+meta-project for a debugging environment such as Eclipse.
+
+We also have provided a separate script to build Hyrax with debug
+flags automatically.  Rather than sourcing build_hyrax, simply source
+build_hyrax_debug instead.
 
 * Background *
 

@@ -46,25 +46,17 @@ endif
 # like 'make' are normal automake targets and will work once the
 # initial build is done.
 
-world: debug_msg autoreconf hyrax
+world: check-webapps-privileges autoreconf hyrax
 
-# check-root-privileges 
+hyrax: check-webapps-privileges daemon olfs
 
-hyrax: daemon olfs
-
-# check-root-privileges 
-
-olfs: olfs-compile olfs-install
-
-# check-root-privileges 
+olfs: check-webapps-privileges olfs-compile olfs-install
 
 olfs-compile:
 	cd src/olfs && ant
 
-olfs-install: check-root-privileges
+olfs-install: check-webapps-privileges
 	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps
-
-# $(MAKE) check-root-privileges 
 
 # How do we run the OLFS-specific tests?
 olfs-check:
@@ -139,15 +131,14 @@ install-data-local:
 		      -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" > tmp.conf
 	mv tmp.conf etc/bes/bes.conf
 
-check-root-privileges:
-	@echo "Not checking privliges. We should make this work at somepoint..."
-#	if [[ $EUID -ne 0 ]]; then \
-#		echo "This operation requires root privileges"; \
-#		exit 1; \
-#	fi
+check-webapps-privileges:
+	if [[ ! -w "$(CATALINA_HOME)/webapps" ]]; then \
+		echo "This operation requires root privileges"; \
+		exit 1; \
+	fi
 
 
 .PHONY: world hyrax olfs olfs-compile olfs-install olfs-check 
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
-.PHONY: rpm cccc check-root-privileges debug_msg
+.PHONY: rpm cccc check-webapps-privileges debug_msg

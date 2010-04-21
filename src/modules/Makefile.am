@@ -23,6 +23,9 @@ modules-check:
 		fi; \
 	done
 
+bes-conf:
+	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
+
 rpm:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 

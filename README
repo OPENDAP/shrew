@@ -138,7 +138,7 @@ Then checkout a copy of <destination> using --ignore-externals so that
 you can change the external links the project uses (unless you want to
 use the trunk revisions).
 
-    svn checkout --ignore-revisions <destination> <optional dir name>
+    svn checkout --ignore-externals <destination> <optional dir name>
 
 ... and edit the file externals.txt, and checking the result into svn
 on the branch or tag. If you need to edit the copy on the trunk,

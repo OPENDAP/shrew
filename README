@@ -1,7 +1,19 @@
 
 $Id$
 
-Hyrax 'Shrew' Build  Project
+Hyrax 'Shrew' Build  
+MODULE DEVELOPMENT BRANCH FOR Hyrax 1.6
+
+[mjohnson 22 April 2010] 
+
+NOTE: This branch (module_dev_1.6) is
+designed to point at the Hyrax 1.6 tags (after release) for BES and
+libdap to maintain binary interface compatibility.  All modules (after
+release) will be the trunk versions.  
+
+PLEASE EDIT THE EXTERNALS AFTER RELEASE!
+
+----------------------------
 
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.

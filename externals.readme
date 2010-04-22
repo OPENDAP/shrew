@@ -1,0 +1,3 @@
+The pointed to versions will need to change once:
+1) The release is complete and tagged.  BES and libdap should point at release tags.
+2) Other modules should point at the trunk versions once they are reintegrated back from the release branch.

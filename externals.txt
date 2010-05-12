@@ -1,13 +1,13 @@
-^/branch/libdap/3.10.0 src/libdap
-^/branch/bes/3.8.0 src/bes
-^/branch/dap-server/4.0 src/modules/dap-server
-^/branch/freeform_handler/3.8.0 src/modules/freeform_handler
-^/branch/fileout_netcdf/1.0 src/modules/fileout_netcdf
-^/branch/netcdf_handler/3.9.0 src/modules/netcdf_handler
-^/branch/hdf4_handler/3.8.0 src/modules/hdf4_handler
-^/branch/hdf5_handler/1.4.0 src/modules/hdf5_handler
-^/branch/wcs_gateway_module/1.1.0 src/modules/wcs_gateway_module
+^/tags/libdap/3.10.2 src/libdap
+^/tags/bes/3.8.3 src/bes
+^/trunk/dap-server src/modules/dap-server
+^/trunk/freeform_handler src/modules/freeform_handler
+^/trunk/fileout_netcdf src/modules/fileout_netcdf
+^/trunk/netcdf_handler src/modules/netcdf_handler
+^/trunk/hdf4_handler src/modules/hdf4_handler
+^/trunk/hdf5_handler src/modules/hdf5_handler
+^/trunk/wcs_gateway_module src/modules/wcs_gateway_module
 ^/trunk/ncml_module src/modules/ncml_module
-^/branch/olfs/1.6.0 src/olfs
-^/tags/nbuilds/shrew-1.6 nbuilds
+^/tags/olfs/1.6.1 src/olfs
+
 

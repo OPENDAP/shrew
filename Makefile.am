@@ -22,7 +22,7 @@ icu = --with-icu-prefix=/usr/local/icu
 # release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
 release_params = $(prefix) 
 
-#debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+#debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
 debug_params = $(debug_flags) $(prefix) 
 
 # Set params depending on whether configure was called with --enable-debug

@@ -23,10 +23,10 @@ modules-check:
 		fi; \
 	done
 
-bes-conf:
+rpm:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
-rpm:
+rpm-nodeps:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
 rpm-nodeps:

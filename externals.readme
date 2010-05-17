@@ -1,3 +1,12 @@
-The pointed to versions will need to change once:
-1) The release is complete and tagged.  BES and libdap should point at release tags.
-2) Other modules should point at the trunk versions once they are reintegrated back from the release branch.
+The externals.txt points to the initial externals for the project.
+
+The project is to be used for development of modules against the
+release of Hyrax 1.6.1, so we point at the tags of the bes, libdap and
+olfs.  
+
+All modules are pointed to the trunk versions since this is new development. 
+
+If a module's changes require changes to libdap, bes, or olfs, THIS
+PROJECT MAY NO LONGER BE USED and the developer needs to switch to the
+main trunk/shrew version with trunk versions of all parts.
+

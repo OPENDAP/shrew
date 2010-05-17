@@ -2,16 +2,19 @@
 $Id$
 
 Hyrax 'Shrew' Build  
-MODULE DEVELOPMENT BRANCH FOR Hyrax 1.6
+MODULE DEVELOPMENT BRANCH FOR Hyrax 1.6.1
+[mjohnson 17 May 2010] 
 
-[mjohnson 22 April 2010] 
+NOTE: This branch (module_dev_1.6) is designed to point at the Hyrax
+1.6.1 tags for bes, libdap, and olfs to maintain binary interface
+compatibility.  All modules will be the trunk versions.  It is to be
+used to develop new features in modules that will be added to the
+released Hyrax 1.6.1 bes, libdap, and olfs core.
 
-NOTE: This branch (module_dev_1.6) is
-designed to point at the Hyrax 1.6 tags (after release) for BES and
-libdap to maintain binary interface compatibility.  All modules (after
-release) will be the trunk versions.  
-
-PLEASE EDIT THE EXTERNALS AFTER RELEASE!
+NOTE: if the module's feature require changes to olfs, libdap, or bes,
+THIS PROJECT SHOULD NOT BE USED and the trunk/shrew project used
+instead.  This project is only for modules to be binary compatible
+with the Hyrax 1.6.1 release.
 
 ----------------------------
 

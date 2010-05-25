@@ -1,5 +1,5 @@
 ^/tags/libdap/3.10.2 src/libdap
-^/tags/bes/3.8.3 src/bes
+^/tags/bes/3.8.4 src/bes
 ^/trunk/dap-server src/modules/dap-server
 ^/trunk/freeform_handler src/modules/freeform_handler
 ^/trunk/fileout_netcdf src/modules/fileout_netcdf

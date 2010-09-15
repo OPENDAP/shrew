@@ -3,6 +3,12 @@ $Id$
 
 Hyrax 'Shrew' Build  Project
 
+-------------------------------------
+
+NOTE: THIS Branch points to the release branches for the hyrax 1.6.2 release and should only be used for this purpose!
+
+-------------------------------------
+
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.
 

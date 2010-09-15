@@ -1,8 +1,8 @@
 #                 -*- Autoconf -*-
 # Process this file with autoconf to produce a c...
 
-AC_PREREQ([2.62])
-AC_INIT([hyrax], [1.6])
+AC_PREREQ([2.63])
+AC_INIT([hyrax], [1.6.2])
 AC_CONFIG_AUX_DIR(conf)
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -16,7 +16,7 @@ dnl in Makefile.am with explicit calls to bes and libdap
 dnl configure.]
 AC_ARG_ENABLE([debug],
 [AS_HELP_STRING([--enable-debug],
-[Build a debug (-g3 -O0) version of Hyrax 1.6 (default is no)])],
+[Build a debug (-g3 -O0) version of Hyrax 1.6.2 (default is no)])],
 [case "${enableval}" in
        yes) build_hyrax_debug=true ;;
        no)  build_hyrax_debug=false ;;

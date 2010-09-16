@@ -112,9 +112,7 @@ autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
 
 rpm:
-	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
-
-rpm-nodeps:
+	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 
 cccc:

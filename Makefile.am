@@ -68,45 +68,45 @@ daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 libdap: debug_msg
 	cd src/$@ && ./configure $(params) > make.$@.log 2>&1
-	echo "*** configure status: $$?" >> make.$@.log
+	echo "%%% configure status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "*** make status: $$?" >> make.$@.log
+	echo "%%% make status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "*** install status: $$?" >> make.$@.log
+	echo "%%% install status: $$?" >> make.$@.log
 
 libdap-check:
 	$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
-	echo "*** check status: $$?" >> make.libdap.log
+	echo "%%% check status: $$?" >> make.libdap.log
 
 libdap-distcheck:
 	$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
-	echo "*** distcheck status: $$?" >> make.libdap.log
+	echo "%%% distcheck status: $$?" >> make.libdap.log
 
 libdap-rpm:
 	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
-	echo "*** rpm status: $$?" >> make.libdap.log
+	echo "%%% rpm status: $$?" >> make.libdap.log
 
 bes: debug_msg
 	cd src/$@ && ./configure $(params) --enable-developer >> make.$@.log 2>&1
-	echo "*** configure status: $$?" >> make.libdap.log
+	echo "%%% configure status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "*** make status: $$?" >> make.libdap.log
+	echo "%%% make status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "*** install status: $$?" >> make.libdap.log
+	echo "%%% install status: $$?" >> make.$@.log
 
 bes-check:
-	$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
-	echo "*** check status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/libdap check >> make.bes.log 2>&1
+	echo "%%% check status: $$?" >> make.bes.log
 
 bes-distcheck:
-	$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
-	echo "*** distcheck status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/bes distcheck >> make.bes.log 2>&1
+	echo "%%% distcheck status: $$?" >> make.bes.log
 
 bes-rpm:
 	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
-	echo "*** rpm status: $$?" >> make.bes.log
+	echo "%%% rpm status: $$?" >> make.bes.log
 
 modules: debug_msg
 	cd src/$@ && ./configure $(params)

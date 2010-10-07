@@ -67,34 +67,46 @@ daemon: libdap bes modules install-data-local
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 libdap: debug_msg
-	cd src/$@ && ./configure $(params)
-	if $(MAKE) $(MFLAGS) -C src/libdap install; then \
-	    echo "`date`: libdap: install: 0" >> build.log; \
-	else \
-	    echo "`date`: libdap: install: 1" >> build.log; \
-	fi
+	cd src/$@ && ./configure $(params) > make.$@.log 2>&1
+	echo "*** configure status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
+	echo "*** make status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
+	echo "*** install status: $$?" >> make.$@.log
 
 libdap-check:
-	-if $(MAKE) $(MFLAGS) -C src/libdap check; then \
-	    echo "`date`: libdap: check: 0" >> build.log; \
-	else \
-	    echo "`date`: libdap: check: 1" >> build.log; \
-	fi
+	$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
+	echo "*** check status: $$?" >> make.libdap.log
+
+libdap-distcheck:
+	$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
+	echo "*** distcheck status: $$?" >> make.libdap.log
+
+libdap-rpm:
+	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
+	echo "*** rpm status: $$?" >> make.libdap.log
 
 bes: debug_msg
-	cd src/$@ && ./configure $(params) --enable-developer
-	if $(MAKE) $(MFLAGS) -C src/$@ install; then \
-	    echo "`date`: $@: install: 0" >> build.log; \
-	else \
-	    echo "`date`: $@: install: 1" >> build.log; \
-	fi
+	cd src/$@ && ./configure $(params) --enable-developer >> make.$@.log 2>&1
+	echo "*** configure status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
+	echo "*** make status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
+	echo "*** install status: $$?" >> make.libdap.log
 
 bes-check:
-	-if $(MAKE) $(MFLAGS) -C src/bes check; then \
-	    echo "`date`: bes: check: 0" >> build.log; \
-	else \
-	    echo "`date`: bes: check: 1" >> build.log; \
-	fi
+	$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
+	echo "*** check status: $$?" >> make.libdap.log
+
+bes-distcheck:
+	$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
+	echo "*** distcheck status: $$?" >> make.libdap.log
+
+bes-rpm:
+	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
+	echo "*** rpm status: $$?" >> make.bes.log
 
 modules: debug_msg
 	cd src/$@ && ./configure $(params)
@@ -111,9 +123,10 @@ bes-configuration-tests:
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
 
-rpm:
-	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
-	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
+modules-rpm:
+	$(MAKE) $(MFLAGS) -C src/modules modules-rpm
+
+rpm:	libdap-rpm bes-rpm modules-rpm
 
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done

@@ -24,12 +24,7 @@ modules-check:
 	done
 
 rpm:
-	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
-
-rpm-nodeps:
-	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
-
-rpm-nodeps:
+	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
 cccc:

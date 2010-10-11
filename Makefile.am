@@ -87,6 +87,10 @@ libdap-rpm:
 	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
 	echo "%%% rpm status: $$?" >> make.libdap.log
 
+libdap-pkg:
+	$(MAKE) $(MFLAGS) -C src/libdap pkg >> make.libdap.log 2>&1
+	echo "%%% pkg status: $$?" >> make.libdap.log
+
 bes: debug_msg
 	cd src/$@ && ./configure $(params) --enable-developer >> make.$@.log 2>&1
 	echo "%%% configure status: $$?" >> make.$@.log
@@ -108,12 +112,25 @@ bes-rpm:
 	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
 	echo "%%% rpm status: $$?" >> make.bes.log
 
+bes-pkg:
+	$(MAKE) $(MFLAGS) -C src/bes pkg >> make.bes.log 2>&1
+	echo "%%% pkg status: $$?" >> make.bes.log
+
 modules: debug_msg
 	cd src/$@ && ./configure $(params)
-	$(MAKE) $(MFLAGS) -C src/$@ modules-install
+	$(MAKE) $(MFLAGS) -C src/$@ modules
 
 modules-check:
 	$(MAKE) $(MFLAGS) -C src/modules modules-check
+
+modules-distcheck:
+	$(MAKE) $(MFLAGS) -C src/modules modules-distcheck
+
+modules-rpm:
+	$(MAKE) $(MFLAGS) -C src/modules modules-rpm
+
+modules-pkg:
+	$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
 bes-configuration-tests:
 	besctl start
@@ -123,10 +140,9 @@ bes-configuration-tests:
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
 
-modules-rpm:
-	$(MAKE) $(MFLAGS) -C src/modules modules-rpm
-
 rpm:	libdap-rpm bes-rpm modules-rpm
+
+pkg:	libdap-pkg bes-pkg modules-pkg
 
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
@@ -152,4 +168,5 @@ check-webapps-privileges:
 .PHONY: world hyrax olfs olfs-compile olfs-install olfs-check 
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
-.PHONY: rpm cccc check-webapps-privileges debug_msg
+.PHONY: rpm cccc check-webapps-privileges debug_msg pkg
+

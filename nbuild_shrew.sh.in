@@ -66,6 +66,12 @@ then
 
 host_full=`hostname`
 host="`hostname | sed 's/\([^\.]*\)\..*/\1/'`"
+
+if test -n "$os_name"
+then
+    host=${host}_${os_name}
+fi
+
 date=`date +%Y.%m.%d`
 platform=`conf/config.guess`
 target=all
@@ -74,12 +80,7 @@ for build_name in libdap bes dap-server fileout_netcdf freeform_handler hdf4_han
     ncml_module netcdf_handler
 do
 
-    if test -z "$os_name"
-    then
-	make_log=${host}.${platform}.${build_name}.${target}.${date}
-    else
-	make_log=${os_name}_${host}.${platform}.${build_name}.${target}.${date}
-    fi
+    make_log=${host}.${platform}.${build_name}.${target}.${date}
 
     echo "Build of ${build_name} using target ${target} on `date`" > $make_log
     echo "Built on ${host_full}, ${platform} (`uname -a`)" >> $make_log
@@ -98,11 +99,23 @@ do
     install_status=`grep '^%%% install status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
     check_status=`grep '^%%% check status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
     distcheck_status=`grep '^%%% distcheck status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
-    rpm_status=`grep '^%%% rpm status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
-    # TODO: Fix this
-    pkg_status=`grep '^%%% pkg status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
 
-    results="compile: $build_status, check: $check_status, install: $install_status, distcheck: $distcheck_status, rpm: $rpm_status, pkg: pkg_status"
+    if test "$make_rpm" = "yes"
+    then
+	rpm_status=`grep '^%%% rpm status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
+    else
+	rpm_status="N/A"
+    fi
+
+    # TODO: Fix this. Maybe just use 'RPM'???
+    if test "$make_pkg" = "yes"
+    then
+	pkg_status=`grep '^%%% pkg status: [01]$' $make_log | sed 's@.*\([01]\)@\1@'`
+    else
+	pkg_status="N/A"
+    fi
+
+    results="compile: $build_status, check: $check_status, install: $install_status, distcheck: $distcheck_status, rpm: $rpm_status, pkg: $pkg_status"
 
     echo "Results: $results" >> $make_log 2>&1
 

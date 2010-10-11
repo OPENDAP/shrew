@@ -11,7 +11,7 @@ os_name=""
 make_rpm=""
 make_pkg=""
 
-do_the_build="yes"
+do_the_build="no"
 process_the_logs="yes"
 
 logs_archive="logs"
@@ -52,11 +52,14 @@ then
     then
 	make libdap-rpm
 	make bes-rpm
+	make modules-rpm
     fi
 
     if test -n "$make_pkg"
     then
 	make libdap-pkg
+	make bes-pkg
+	make modues-pkg
     fi
 
 fi

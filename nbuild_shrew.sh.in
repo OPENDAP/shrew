@@ -7,11 +7,11 @@
 # the os name. Then run the script
 
 USER_PW=""
-os_name=""
+os_name="OSX-10.5.8"
 make_rpm=""
-make_pkg=""
+make_pkg="yes"
 
-do_the_build="no"
+do_the_build="yes"
 process_the_logs="yes"
 
 logs_archive="logs"
@@ -48,14 +48,14 @@ then
     make bes-distcheck
     make modules-distcheck
 
-    if test -n "$make_rpm"
+    if test "$make_rpm" = "yes"
     then
 	make libdap-rpm
 	make bes-rpm
 	make modules-rpm
     fi
 
-    if test -n "$make_pkg"
+    if test "$make_pkg" = "yes"
     then
 	make libdap-pkg
 	make bes-pkg

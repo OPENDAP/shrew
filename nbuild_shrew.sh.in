@@ -124,7 +124,7 @@ do
 
     # now record the build on the test machine...
 
-    curl --digest --user $USER_PW "http://test.opendap.org/cgi-bin/build_recorder.pl?host=${host}&build=${build_name}&platform=${platform}&date=${date}&compile=${build_status}&check=${check_status}&install=${install_status}&distcheck=${distcheck_status}&rpm=${rpm_status}" > /dev/null 2>&1
+    curl --digest --user $USER_PW "http://test.opendap.org/cgi-bin/build_recorder.pl?host=${host}&build=${build_name}&platform=${platform}&date=${date}&compile=${build_status}&check=${check_status}&install=${install_status}&distcheck=${distcheck_status}&rpm=${rpm_status}&pkg=${pkg_status}" > /dev/null 2>&1
 
     # Copy the log file to test.opendap.org
 

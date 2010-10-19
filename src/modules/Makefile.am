@@ -26,7 +26,7 @@ modules-distcheck:
 	done
 
 modules-rpm:
-	RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	export RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
 	for dir in $(SUBDIRS); do \
 		$(MAKE) $(MFLAGS) -C $$dir rpm  >> make.$$dir.log 2>&1; \
 		echo "%%% rpm status: $$?" >> make.$$dir.log; \

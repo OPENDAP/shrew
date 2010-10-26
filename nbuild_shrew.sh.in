@@ -30,8 +30,6 @@ then
     rm make.*.log
     rm src/modules/make.*.log
 
-if false
-then
     make -k distclean
     svn update --accept theirs-full
     autoreconf --verbose --force --install
@@ -46,17 +44,14 @@ then
     # Now the BES
     make bes
     make bes-check
-fi
+
     # Now the modules
     make modules
     make modules-check
 
     # Now run the packaging targets
-if false
-then
     make libdap-distcheck
     make bes-distcheck
-fi
     make modules-distcheck
 
     if test "$make_rpm" = "yes"

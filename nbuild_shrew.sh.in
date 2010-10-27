@@ -20,7 +20,7 @@ logs_archive="logs"
 # First build, then process all of the log files and upload the results
 
 export prefix=`pwd`
-export PATH=$prefix/bin:$PATH
+export PATH=$prefix/bin:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$prefix/lib
 
 # Clean, update and initialize shrew

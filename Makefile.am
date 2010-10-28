@@ -19,11 +19,11 @@ icu = --with-icu-prefix=/usr/local/icu
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-# release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
-release_params = $(prefix) 
+release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+# release_params = $(prefix) 
 
-#debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
-debug_params = $(debug_flags) $(prefix) 
+debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+# debug_params = $(debug_flags) $(prefix) 
 
 # Set params depending on whether configure was called with --enable-debug
 if BUILD_HYRAX_DEBUG
@@ -67,41 +67,71 @@ daemon: libdap bes modules install-data-local
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 libdap: debug_msg
-	cd src/$@ && ./configure $(params)
-	if $(MAKE) $(MFLAGS) -C src/libdap install; then \
-	    echo "`date`: libdap: install: 0" >> build.log; \
-	else \
-	    echo "`date`: libdap: install: 1" >> build.log; \
-	fi
+	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1
+	echo "%%% configure status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
+	echo "%%% make status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
+	echo "%%% install status: $$?" >> make.$@.log
 
 libdap-check:
-	-if $(MAKE) $(MFLAGS) -C src/libdap check; then \
-	    echo "`date`: libdap: check: 0" >> build.log; \
-	else \
-	    echo "`date`: libdap: check: 1" >> build.log; \
-	fi
+	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
+	echo "%%% check status: $$?" >> make.libdap.log
+
+libdap-distcheck:
+	-$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
+	echo "%%% distcheck status: $$?" >> make.libdap.log
+
+libdap-rpm:
+	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
+	echo "%%% rpm status: $$?" >> make.libdap.log
+
+libdap-pkg:
+	-$(MAKE) $(MFLAGS) -C src/libdap pkg >> make.libdap.log 2>&1
+	echo "%%% pkg status: $$?" >> make.libdap.log
 
 bes: debug_msg
-	cd src/$@ && ./configure $(params) --enable-developer
-	if $(MAKE) $(MFLAGS) -C src/$@ install; then \
-	    echo "`date`: $@: install: 0" >> build.log; \
-	else \
-	    echo "`date`: $@: install: 1" >> build.log; \
-	fi
+	(cd src/$@ && ./configure $(params) --enable-developer) \
+		>> make.$@.log 2>&1
+	echo "%%% configure status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
+	echo "%%% make status: $$?" >> make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
+	echo "%%% install status: $$?" >> make.$@.log
 
 bes-check:
-	-if $(MAKE) $(MFLAGS) -C src/bes check; then \
-	    echo "`date`: bes: check: 0" >> build.log; \
-	else \
-	    echo "`date`: bes: check: 1" >> build.log; \
-	fi
+	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.bes.log 2>&1
+	echo "%%% check status: $$?" >> make.bes.log
+
+bes-distcheck:
+	-$(MAKE) $(MFLAGS) -C src/bes distcheck >> make.bes.log 2>&1
+	echo "%%% distcheck status: $$?" >> make.bes.log
+
+bes-rpm:
+	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
+	echo "%%% rpm status: $$?" >> make.bes.log
+
+bes-pkg:
+	-$(MAKE) $(MFLAGS) -C src/bes pkg >> make.bes.log 2>&1
+	echo "%%% pkg status: $$?" >> make.bes.log
 
 modules: debug_msg
-	cd src/$@ && ./configure $(params)
-	$(MAKE) $(MFLAGS) -C src/$@ modules-install
+	(cd src/$@ && ./configure $(params))
+	-$(MAKE) $(MFLAGS) -C src/$@ modules
 
 modules-check:
-	$(MAKE) $(MFLAGS) -C src/modules modules-check
+	-$(MAKE) $(MFLAGS) -C src/modules modules-check
+
+modules-distcheck:
+	-$(MAKE) $(MFLAGS) -C src/modules modules-distcheck
+
+modules-rpm:
+	-$(MAKE) $(MFLAGS) -C src/modules modules-rpm
+
+modules-pkg:
+	-$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
 bes-configuration-tests:
 	besctl start
@@ -111,11 +141,9 @@ bes-configuration-tests:
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
 
-rpm:
-	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
+rpm:	libdap-rpm bes-rpm modules-rpm
 
-rpm-nodeps:
-	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
+pkg:	libdap-pkg bes-pkg modules-pkg
 
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
@@ -141,4 +169,5 @@ check-webapps-privileges:
 .PHONY: world hyrax olfs olfs-compile olfs-install olfs-check 
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
-.PHONY: rpm cccc check-webapps-privileges debug_msg
+.PHONY: rpm cccc check-webapps-privileges debug_msg pkg
+

@@ -67,55 +67,57 @@ daemon: libdap bes modules install-data-local
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 libdap: debug_msg
-	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1
-	echo "%%% configure status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "%%% make status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "%%% install status: $$?" >> make.$@.log
+	echo "%%% make $@ invoked at `date`..." | tee make.$@.log
+	(cd src/$@ && ./configure $(params) ) 2>&1 | tee -a make.$@.log 
+	echo "%%% configure status: $$?" | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log 
+	echo "%%% make status: $$?" | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log 
+	echo "%%% install status: $$?" | tee -a make.$@.log
 
 libdap-check:
-	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
-	echo "%%% check status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -C src/libdap check 2>&1 | tee -a make.libdap.log 
+	echo "%%% check status: $$?" | tee -a make.libdap.log
 
 libdap-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
-	echo "%%% distcheck status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -C src/libdap distcheck 2>&1 | tee -a make.libdap.log 
+	echo "%%% distcheck status: $$?" | tee -a make.libdap.log
 
 libdap-rpm:
 	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
-	echo "%%% rpm status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/libdap rpm 2>&1 | tee -a make.libdap.log 
+	echo "%%% rpm status: $$?" | tee -a make.libdap.log
 
 libdap-pkg:
-	-$(MAKE) $(MFLAGS) -C src/libdap pkg >> make.libdap.log 2>&1
-	echo "%%% pkg status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1 | tee -a make.libdap.log 
+	echo "%%% pkg status: $$?" | tee -a make.libdap.log
 
 bes: debug_msg
+	echo "%%% make $@ invoked at `date`..." | tee make.$@.log
 	(cd src/$@ && ./configure $(params) --enable-developer) \
-		>> make.$@.log 2>&1
-	echo "%%% configure status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "%%% make status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "%%% install status: $$?" >> make.$@.log
+		2>&1 | tee -a make.$@.log 
+	echo "%%% configure status: $$?" | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log 
+	echo "%%% make status: $$?" | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log 
+	echo "%%% install status: $$?" | tee -a make.$@.log
 
 bes-check:
-	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.bes.log 2>&1
-	echo "%%% check status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/libdap check 2>&1 | tee -a make.bes.log 
+	echo "%%% check status: $$?" | tee -a make.bes.log
 
 bes-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/bes distcheck >> make.bes.log 2>&1
-	echo "%%% distcheck status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/bes distcheck 2>&1 | tee -a make.bes.log 
+	echo "%%% distcheck status: $$?" | tee -a make.bes.log
 
 bes-rpm:
 	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
-	echo "%%% rpm status: $$?" >> make.bes.log
+	$(MAKE) $(MFLAGS) -C src/bes rpm 2>&1 | tee -a make.bes.log 
+	echo "%%% rpm status: $$?" | tee -a make.bes.log
 
 bes-pkg:
-	-$(MAKE) $(MFLAGS) -C src/bes pkg >> make.bes.log 2>&1
-	echo "%%% pkg status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/bes pkg 2>&1 | tee -a make.bes.log 
+	echo "%%% pkg status: $$?" | tee -a make.bes.log
 
 modules: debug_msg
 	(cd src/$@ && ./configure $(params))
@@ -161,7 +163,7 @@ install-data-local:
 
 check-webapps-privileges:
 	if [[ ! -w "$(CATALINA_HOME)/webapps" ]]; then \
-		echo "This operation requires root privileges"; \
+		echo "This operation requires write privileges on $(CATALINA_HOME)/webapps"; \
 		exit 1; \
 	fi
 

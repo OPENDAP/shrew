@@ -50,11 +50,13 @@ AC_MSG_NOTICE(Set the BES group to $bes_group)
 
 if test -d tomcat -o -L tomcat
 then
-    CATALINA_HOME=tomcat
+    CATALINA_HOME="`pwd`/tomcat"
+    AC_MSG_NOTICE(Found a local install of tomcat to use for OLFS install...)
 elif ls -1d apache-tomcat-*
 then
     tc=`ls -1d apache-tomcat-*`
-    CATALINA_HOME=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
+    CATALINA_HOME="`pwd`/`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`"
+    AC_MSG_NOTICE(Found a local install of tomcat to use for OLFS install...)
 else
     AC_MSG_WARN(I could not find a local tomcat servlet engine directory)
 fi

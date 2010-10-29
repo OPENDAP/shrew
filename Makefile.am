@@ -67,7 +67,8 @@ daemon: libdap bes modules install-data-local
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 libdap: debug_msg
-	(cd src/$@ && ./configure $(params) ) 2>&1 | tee make.$@.log 
+	echo "%%% make $@ invoked at `date`..." | tee make.$@.log
+	(cd src/$@ && ./configure $(params) ) 2>&1 | tee -a make.$@.log 
 	echo "%%% configure status: $$?" | tee -a make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log 
 	echo "%%% make status: $$?" | tee -a make.$@.log
@@ -92,8 +93,9 @@ libdap-pkg:
 	echo "%%% pkg status: $$?" | tee -a make.libdap.log
 
 bes: debug_msg
+	echo "%%% make $@ invoked at `date`..." | tee make.$@.log
 	(cd src/$@ && ./configure $(params) --enable-developer) \
-		2>&1 | tee make.$@.log 
+		2>&1 | tee -a make.$@.log 
 	echo "%%% configure status: $$?" | tee -a make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log 
 	echo "%%% make status: $$?" | tee -a make.$@.log

@@ -7,7 +7,8 @@ SUBDIRS = dap-server netcdf_handler hdf4_handler hdf5_handler \
 
 modules:
 	for dir in $(SUBDIRS); do \
-		$(MAKE) $(MFLAGS) -C $$dir 2>&1 | tee make.$$dir.log; \
+		echo "%%% make on subdir $$dir invoked at `date`..." | tee make.$$dir.log \
+		$(MAKE) $(MFLAGS) -C $$dir 2>&1 | tee -a make.$$dir.log; \
 		echo "%%% make status: $$?" | tee -a make.$$dir.log; \
 		$(MAKE) $(MFLAGS) -C $$dir install 2>&1 | tee -a make.$$dir.log; \
 		echo "%%% install status: $$?" | tee -a make.$$dir.log; \

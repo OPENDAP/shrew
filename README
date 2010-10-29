@@ -10,6 +10,7 @@ In the following, $shrew is the full pathname of the 'main' directory
 
   * Start Here *
   * Organization *
+  * OLFS Install and Local Apache Tomcat Configuration
   * Customizing the Build *
   * Debug Build *
   * Background *
@@ -74,9 +75,31 @@ the BES and a collection of modules that are loaded into the BES. The
 OLFS, libdap and BES are in the 'src' directory and the BES modules
 are in 'src/modules'.
 
+
+* OLFS Install and Local Apache Tomcat Configuration
+
+The configure.ac script will look for an installation of tomcat in the
+local top-level shrew directory.  The tomcat dir searched for in the
+top-level shrew must be named "tomcat" or "apache-tomcat-*" where the
+* reflects the version number in the standard distribution.
+
+If a local tomcat is found it will override the user's CATALINA_HOME
+environment variable to install the OLFS in that location.
+
+If a local copy of tomcat is not found, the user's CATALINA_HOME
+environment variable will be used.
+
+Failing that, the OLFS will not be installed.
+
+To explicitly tell make where to install the olfs (after configure is
+run), you may call with with the env variable to use:
+
+% make CATALINA_HOME="/some/location/for/tomcat" olfs-install
+
+
 * Customizing the Build *
 
-If you look n the Makefile.am, you'll see that build assumes that
+If you look in the Makefile.am, you'll see that build assumes that
 hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
 those to the configure scripts in the src/modules directory. If you
 want to have those configure scripts look for the HDF4, ..., packages

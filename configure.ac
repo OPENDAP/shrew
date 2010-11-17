@@ -13,7 +13,8 @@ dnl [TODO Consider taking the options as an
 dnl arg string...  We can't set CPPFLAGS directly
 dnl in the configure invocation since they get lost
 dnl in Makefile.am with explicit calls to bes and libdap
-dnl configure.]
+dnl configure.
+
 AC_ARG_ENABLE([debug],
 [AS_HELP_STRING([--enable-debug],
 [Build a debug (-g3 -O0) version of Hyrax 1.6.2 (default is no)])],
@@ -22,8 +23,8 @@ AC_ARG_ENABLE([debug],
        no)  build_hyrax_debug=false ;;
        *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
      esac],
-[build_hyrax_debug=false]
-)
+[build_hyrax_debug=false])
+
 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test x$build_hyrax_debug = xtrue])
 
 AC_CANONICAL_SYSTEM

@@ -25,8 +25,10 @@ modules-distcheck:
 		echo "%%% distcheck status: $$?" >> make.$$dir.log; \
 	done
 
+# Note that abs_top_builddir is set to $prefix/src/modules so we set _topdir 
+# to two levels up to get the rpms all deposited in the same place.
 modules-rpm:
-	export RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/../../rpm\"";\
 	for dir in $(SUBDIRS); do \
 		$(MAKE) $(MFLAGS) -C $$dir rpm  >> make.$$dir.log 2>&1; \
 		echo "%%% rpm status: $$?" >> make.$$dir.log; \

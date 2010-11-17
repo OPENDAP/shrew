@@ -12,10 +12,13 @@ SUBDIRS = src/libdap src/bes src/modules
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
 prefix = --prefix=$(abs_top_builddir)
-netcdf = --with-netcdf=/usr/local/netcdf
-hdf4 = --with-hdf4=/usr/local/hdf4
-hdf5 = --with-hdf5=/usr/local/hdf5
-icu = --with-icu-prefix=/usr/local/icu
+# Only use these if you need them and make sure to double check the values. 
+# If they are wrong, configure in the modules dir will fail and that means 
+# otehr parts of the build will fail too.
+# netcdf = --with-netcdf=/usr/local/netcdf
+# hdf4 = --with-hdf4=/usr/local/hdf4
+# hdf5 = --with-hdf5=/usr/local/hdf5
+# icu = --with-icu-prefix=/usr/local/icu
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
@@ -83,7 +86,7 @@ libdap-distcheck:
 	echo "%%% distcheck status: $$?" >> make.libdap.log
 
 libdap-rpm:
-	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
 	echo "%%% rpm status: $$?" >> make.libdap.log
 
@@ -109,7 +112,7 @@ bes-distcheck:
 	echo "%%% distcheck status: $$?" >> make.bes.log
 
 bes-rpm:
-	-RPM_OPTIONS="--nodeps --define \"_topdir $prefix/rpm\"";\
+	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
 	echo "%%% rpm status: $$?" >> make.bes.log
 
@@ -117,9 +120,16 @@ bes-pkg:
 	-$(MAKE) $(MFLAGS) -C src/bes pkg >> make.bes.log 2>&1
 	echo "%%% pkg status: $$?" >> make.bes.log
 
+# If we don't ignore errors here, a problem with any single configure
+# script on the host will halt all the remaining configure and make operations
+# Then make check will run, but will fail for some/most handlers since 
+# a bunch of the configure scripts never ran. It's also very confusing to 
+# debug.
+modules-configure:
+	(cd src/modules && ./configure $(params))
+
 modules: debug_msg
-	(cd src/$@ && ./configure $(params))
-	-$(MAKE) $(MFLAGS) -C src/$@ modules
+	-$(MAKE) $(MFLAGS) -C src/modules modules
 
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check

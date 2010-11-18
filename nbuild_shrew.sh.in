@@ -3,8 +3,8 @@
 # $Id: nightly_dods_build.sh,v 1.3.2.13 2004/06/14 20:57:23 jimg Exp $
 #
 # Build code checked out from svn using te shrew project
-# Usage: copy the .in file to a plain file, set the build recorder username and password and 
-# the os name. Then run the script
+# Usage: copy the .in file to a plain file, set the build recorder username
+# and password and the os name. Then run the script
 
 USER_PW=""
 os_name="OSX-10.5.8"

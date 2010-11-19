@@ -46,6 +46,7 @@ then
     make bes-check
 
     # Now the modules
+    make modules-configure
     make modules
     make modules-check
 

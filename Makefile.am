@@ -69,6 +69,30 @@ daemon: libdap bes modules install-data-local
 
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
+depends:
+	echo "Building dependencies."
+	cd src/dependencies
+	./depends-builder build $(prefix)
+
+depends-check: 
+	echo "Building and checking dependencies."
+	cd src/dependencies
+	./depends-builder check $(prefix)
+
+
+depends-install:
+	echo "Building and installing dependencies."
+	cd src/dependencies
+	./depends-builder install $(prefix)
+
+
+depends-pkg:
+	echo "Building OS-X Package for Hyrax dependencies."
+	cd src/dependencies
+	./mkPackage @PACKAGE_VERSION@  $(prefix)
+
+
+
 libdap: debug_msg
 	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1
 	echo "%%% configure status: $$?" >> make.$@.log
@@ -171,7 +195,7 @@ install-data-local:
 
 check-webapps-privileges:
 	if [[ ! -w "$(CATALINA_HOME)/webapps" ]]; then \
-		echo "This operation requires root privileges"; \
+		echo "This operation requires write permission on the root privileges"; \
 		exit 1; \
 	fi
 

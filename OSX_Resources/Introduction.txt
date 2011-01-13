@@ -1,0 +1,31 @@
+<html>
+
+<p>This installer will give you the option to install all or part(s) of the Hyrax data server.</p>
+
+
+<h4>About Hyrax</h4>
+
+<p>Hyrax is a new data server which combines the efforts at UCAR/HAO to build a high performance DAP-compliant data server for the Earth System Grid II project with existing software developed by OPeNDAP.</p>
+
+<p>Hyrax uses the Java servlet mechanism to hand off requests from a general web daemon to DAP format-specific software. This results in higher performance for small requests. The servlet front end, which we call the OPeNDAP Lightweight Front end Server (OLFS) looks at each request and formulates a query to a second server (which may or may not be on the same machine as the OLFS) called the Back End Server (BES).
+The BES is the high-performance server software from HAO. It handles reading data from the data stores and returning DAP-compliant responses to the OLFS. In turn, the OLFS may pass these response back to the requestor with little or no modification or it may use them to build more complex responses. The nature of the Inter Process Communication (IPC) between the OLFS and BES is such that they should both be on the same machine or be able to communicate over a very high bandwidth channel.</p>
+
+<p>Both the OLFS and the BES will run and serve test data immediately after a default installation. Additional configuration is required for them to serve site specific data.</p>
+
+<ul>
+<li><a href="http://docs.opendap.org/index.php/Hyrax_-_Configuration">Hyrax Configuration</a></li>
+<li><a href="http://docs.opendap.org/index.php/Hyrax_-_Installation_Instructions#Starting_and_Stopping_Hyrax">Starting And Stopping</a></li>
+</ul>
+<br/>
+<br/>
+
+
+
+
+<small>
+<STRONG>COPYRIGHT INFORMATION</STRONG><br/>
+The OPeNDAP Hyrax code is copyrighted using the GNU Lesser GPL. See the  file COPYING or contact the Free Software Foundation, Inc., at 59 Temple  Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the BES were  copyrighted by the University Corporation for Atmospheric Research;  see the file COPYRIGHT_UCAR.
+</small>
+  
+
+</html>

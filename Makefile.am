@@ -15,17 +15,17 @@ prefix = --prefix=$(abs_top_builddir)
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # otehr parts of the build will fail too.
-# netcdf = --with-netcdf=/usr/local/netcdf
-# hdf4 = --with-hdf4=/usr/local/hdf4
-# hdf5 = --with-hdf5=/usr/local/hdf5
-# icu = --with-icu-prefix=/usr/local/icu
+netcdf = --with-netcdf=$(abs_top_builddir)/deps/netcdf-3.6.3
+hdf4 = --with-hdf4=$(abs_top_builddir)/deps/hdf-4.2.5 --with-hdfeos2=$(abs_top_builddir)/deps/hdf-4.2.5 --enable-short-name
+hdf5 = --with-hdf5=$(abs_top_builddir)/deps/hdf5-1.8.5-patch1
+icu = --with-icu-prefix=$(abs_top_builddir)/deps/icu-3.6
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
 # release_params = $(prefix) 
 
-debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
 # debug_params = $(debug_flags) $(prefix) 
 
 # Set params depending on whether configure was called with --enable-debug
@@ -85,13 +85,13 @@ depends-install:
 	cd src/dependencies
 	./depends-builder install $(prefix)
 
-
+# This runs the depends-install task/target/action thingy from inside
+# the mlPackage script (so no need to run it here as a separate call
+# to make).
 depends-pkg:
 	echo "Building OS-X Package for Hyrax dependencies."
 	cd src/dependencies
 	./mkPackage @PACKAGE_VERSION@  $(prefix)
-
-
 
 libdap: debug_msg
 	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1

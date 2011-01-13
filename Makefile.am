@@ -11,22 +11,22 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
-prefix = --prefix=$(abs_top_builddir)
+prefix_arg = --prefix=$(prefix)
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # otehr parts of the build will fail too.
-netcdf = --with-netcdf=$(abs_top_builddir)/deps/netcdf-3.6.3
-hdf4 = --with-hdf4=$(abs_top_builddir)/deps/hdf-4.2.5 --with-hdfeos2=$(abs_top_builddir)/deps/hdf-4.2.5 --enable-short-name
-hdf5 = --with-hdf5=$(abs_top_builddir)/deps/hdf5-1.8.5-patch1
-icu = --with-icu-prefix=$(abs_top_builddir)/deps/icu-3.6
+netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
-# release_params = $(prefix) 
+release_params = $(prefix_arg) $(netcdf) $(hdf4) $(hdf5) $(icu)
+# release_params = $(prefix_arg) 
 
-debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
-# debug_params = $(debug_flags) $(prefix) 
+debug_params = $(debug_flags) $(prefix_arg) $(netcdf) $(hdf4) $(hdf5) $(icu)
+# debug_params = $(debug_flags) $(prefix_arg) 
 
 # Set params depending on whether configure was called with --enable-debug
 if BUILD_HYRAX_DEBUG
@@ -70,28 +70,27 @@ daemon: libdap bes modules install-data-local
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
 depends:
-	echo "Building dependencies."
-	cd src/dependencies
-	./depends-builder build $(prefix)
+	@echo "Building dependencies."
+	(cd src/dependencies && ./depends-builder build $(prefix) ) > make.$@.log 2>&1
+	echo "%%% $@ status: $$?" >> make.$@.log
 
 depends-check: 
-	echo "Building and checking dependencies."
-	cd src/dependencies
-	./depends-builder check $(prefix)
-
+	@echo "Building and checking dependencies."
+	(cd src/dependencies && ./depends-builder check $(prefix) ) > make.$@.log 2>&1
+	echo "%%% $@ status: $$?" >> make.$@.log
 
 depends-install:
-	echo "Building and installing dependencies."
-	cd src/dependencies
-	./depends-builder install $(prefix)
+	@echo "Building and installing dependencies."
+	(cd src/dependencies && ./depends-builder install $(prefix) ) > make.$@.log 2>&1
+	echo "%%% $@ status: $$?" >> make.$@.log
 
 # This runs the depends-install task/target/action thingy from inside
 # the mlPackage script (so no need to run it here as a separate call
 # to make).
 depends-pkg:
-	echo "Building OS-X Package for Hyrax dependencies."
-	cd src/dependencies
-	./mkPackage @PACKAGE_VERSION@  $(prefix)
+	@echo "Building OS-X Package for Hyrax dependencies."
+	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) > make.$@.log 2>&1
+	echo "%%% mkPackage status: $$?" >> make.$@.log
 
 libdap: debug_msg
 	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1

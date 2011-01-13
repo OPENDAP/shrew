@@ -22,7 +22,7 @@ icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix_arg) $(netcdf) $(hdf4) $(hdf5) $(icu)
+release_params = $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 # release_params = $(prefix_arg) 
 
 debug_params = $(debug_flags) $(prefix_arg) $(netcdf) $(hdf4) $(hdf5) $(icu)

@@ -33,7 +33,7 @@ then
     make -k distclean
     svn update --accept theirs-full
     autoreconf --verbose --force --install
-    ./configure
+    ./configure --prefix=$prefix
 
     make autoreconf
 

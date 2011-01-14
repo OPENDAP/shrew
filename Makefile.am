@@ -11,6 +11,7 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
+olfs_version_arg = -DHYRAX_VERSION=1.6.2 -DOLFS_VERSION=Nightly.Build
 prefix_arg = --prefix=$(prefix)
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
@@ -56,7 +57,7 @@ hyrax: check-webapps-privileges daemon olfs
 olfs: check-webapps-privileges olfs-compile olfs-install
 
 olfs-compile:
-	cd src/olfs && ant
+	cd src/olfs && ant $(olfs_version_arg)
 
 olfs-install: check-webapps-privileges
 	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps

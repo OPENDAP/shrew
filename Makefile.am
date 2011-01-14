@@ -15,17 +15,17 @@ prefix_arg = --prefix=$(prefix)
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # otehr parts of the build will fail too.
-netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
-icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+# netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+# hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+# icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
 release_params = $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 # release_params = $(prefix_arg) 
 
-debug_params = $(debug_flags) $(prefix_arg) $(netcdf) $(hdf4) $(hdf5) $(icu)
+debug_params = $(debug_flags) $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 # debug_params = $(debug_flags) $(prefix_arg) 
 
 # Set params depending on whether configure was called with --enable-debug

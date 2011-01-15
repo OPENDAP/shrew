@@ -66,7 +66,7 @@ olfs-install: check-webapps-privileges
 olfs-check:
 	echo "Don't know how to check the complete Hyrax server"
 
-daemon: libdap bes modules install-data-local
+daemon: libdap bes modules-configure modules install-data-local
 
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 

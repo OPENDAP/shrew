@@ -15,7 +15,7 @@ olfs_version_arg = -DHYRAX_VERSION=1.6.2 -DOLFS_VERSION=Nightly.Build
 prefix_arg = --prefix=$(prefix)
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
-# otehr parts of the build will fail too.
+# other parts of the build will fail too.
 # netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 # hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
 # hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1

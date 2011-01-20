@@ -11,8 +11,10 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
-olfs_version_arg = -DHYRAX_VERSION=1.6.2 -DOLFS_VERSION=Nightly.Build
-prefix_arg = --prefix=$(prefix)
+olfs_version_arg = -DHYRAX_VERSION=1.6.2 -DOLFS_VERSION=nightly.build
+
+prefix_arg = --prefix=$(prefix) --disable-option-checking
+
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
@@ -21,12 +23,14 @@ hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hd
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
+modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
+
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
+release_params = $(prefix_arg) $(modules_arg)
 # release_params = $(prefix_arg) 
 
-debug_params = $(debug_flags) $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
+debug_params = $(debug_flags) $(prefix_arg) $(modules_arg)
 # debug_params = $(debug_flags) $(prefix_arg) 
 
 # Set params depending on whether configure was called with --enable-debug
@@ -173,7 +177,7 @@ bes-configuration-tests:
 	besctl stop
 
 autoreconf:
-	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -v); done
+	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -f -v); done
 
 rpm:	libdap-rpm bes-rpm modules-rpm
 

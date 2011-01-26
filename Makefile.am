@@ -18,10 +18,10 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
-# netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-# hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
-# icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
@@ -191,11 +191,11 @@ clean-local:
 
 install-data-local: 
 	@echo "Bes will run as user " $(bes_user) " group " $(bes_group)
-	cat etc/bes/bes.conf \
+	cat $(prefix)/etc/bes/bes.conf \
 		| sed -e "s/user_name/$(bes_user)/g" \
 		      -e "s/group_name/$(bes_group)/g" \
 		      -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" > tmp.conf
-	mv tmp.conf etc/bes/bes.conf
+	mv tmp.conf $(prefix)/etc/bes/bes.conf
 
 check-webapps-privileges:
 	if [[ ! -w "$(CATALINA_HOME)/webapps" ]]; then \

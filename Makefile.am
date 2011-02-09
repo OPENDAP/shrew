@@ -63,12 +63,17 @@ olfs: check-webapps-privileges olfs-compile olfs-install
 olfs-compile:
 	cd src/olfs && ant $(olfs_version_arg)
 
-olfs-install: check-webapps-privileges
-	cd src/olfs && cp build/dist/*.war $(CATALINA_HOME)/webapps
+olfs-install: check-webapps-privileges olfs-compile
+	if [[ ! -d "$(prefix)/$(CATALINA_HOME)/webapps" ]]; then \
+		echo "ERROR!! $(prefix)/$(CATALINA_HOME)/webapps is missing."; \
+		echo "ERROR!! There is no place to put the OLFS web application archive! OLFS NOT INSTALLED."; \
+	else \
+		cp src/olfs/build/dist/*.war $(prefix)/$(CATALINA_HOME)/webapps;\
+	fi
 
 # How do we run the OLFS-specific tests?
 olfs-check:
-	echo "Don't know how to check the complete Hyrax server"
+	./src/olfs/make-check
 
 daemon: libdap bes modules-configure modules install-data-local
 
@@ -198,8 +203,8 @@ install-data-local:
 	mv tmp.conf $(prefix)/etc/bes/bes.conf
 
 check-webapps-privileges:
-	if [[ ! -w "$(CATALINA_HOME)/webapps" ]]; then \
-		echo "WARNING! This operation requires write permission on the root privileges"; \
+	if [[ -d "$(prefix)/$(CATALINA_HOME)/webapps" && ! -w "$(prefix)/$(CATALINA_HOME)/webapps" ]]; then \
+		echo "WARNING! This operation requires write permission on $(CATALINA_HOME)/webapps"; \
 	fi
 
 

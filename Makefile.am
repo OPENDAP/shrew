@@ -20,6 +20,7 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 # other parts of the build will fail too.
 #netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 #hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 #icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
@@ -53,6 +54,8 @@ endif
 # libdap and then for bes and then for the modules. Other targets are
 # like 'make' are normal automake targets and will work once the
 # initial build is done.
+
+universe: depends-install world
 
 world: check-webapps-privileges autoreconf hyrax
 
@@ -228,7 +231,7 @@ check-webapps-privileges:
 	fi
 
 
-.PHONY: world hyrax olfs olfs-compile olfs-install olfs-check olfs-osx-package 
+.PHONY: universe world hyrax olfs olfs-compile olfs-install olfs-check olfs-osx-package 
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
 .PHONY: rpm cccc check-webapps-privileges debug_msg pkg

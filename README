@@ -1,11 +1,10 @@
 
-$Id$
-
 Hyrax 'Shrew' Build  Project
 
 -------------------------------------
 
-NOTE: THIS Branch points to the release branches for the hyrax 1.6.2 release and should only be used for this purpose!
+NOTE: THIS Branch points to the release branches for the hyrax 1.6.2 release
+and should only be used for this purpose!
 
 -------------------------------------
 
@@ -16,7 +15,7 @@ In the following, $shrew is the full pathname of the 'main' directory
 
   * Start Here *
   * Organization *
-  * Customizing the Build *
+  * Customizing the Build * Note: OSX Package builders, read this.
   * Debug Build *
   * Background *
   * About the Externally linked projects *
@@ -36,9 +35,12 @@ process. Since you're likely a developer, it's wise to set $prefix to
 
 Synopsis:
 
+Simple build:
+
 export prefix=`pwd`
 export PATH=$prefix/bin$PATH
-autoreconf -i
+
+autoreconf -ifv
 ./configure
 make world
 
@@ -46,11 +48,45 @@ The script 'build_hyrax' does this for you. If you source that instead
 of executing it, the modified PATH and the '$prefix' variable will be
 left in you shell.
 
+A more sophisticated build, which makes and installs a server using our
+third party copies of the science data access API libraries and tomcat:
+
+export prefix=`pwd`
+export PATH=$prefix/bin$PATH
+
+autoreconf -ifv
+./configure
+make universe
+
+Also to make OS/X packages: 
+
+make pkg
+
+To make RPMs:
+
+make rpm
+
+To run tests for all the C++ code:
+
+make check
+
+To test the whole server:
+
+1. Edit etc/bes/bes.conf so that BES.Catalog.catalog.RootDirectory points to
+a copy of the 'test dat project' (http://scm.opendap.org/svn/trunk/test-data).
+2. Start Hyrax
+    a. Start the BES (besctl start)
+    b. Start the OLFS (./apache-tomcat-*/bin/startup.sh)
+3 Run the tests (make olfs-check)
+    NB: Five of the 'dejagnu' tests will fail
+
 Note: that once 'make world' is run, it's easy to re-run configure
 using ./config.status or the Makefile targets in the various C++
 source directories. Also, there are a number of other targets that can
 be used to build less than the 'world' target. Other targets besides
-the standard autoconf targets are:
+the standard autoconf targets are (but be suspicious of these and check
+the Makefile.am for ones that are not listed here or differences in behavior
+since these get edited frequently):
 
 world: Run the autoreconf and then grind through the whole build, but
 not the tests.
@@ -63,6 +99,8 @@ libdap: Build libdap
 bes: Build bes
 modules: Build all of the bes modules
 bes-conf: For each module, run the bes-conf target.
+rpm
+pkg
 
 Standard targets that are useful:
 
@@ -75,29 +113,23 @@ install: Runs install in all of the directories.
 
 * Organization *
 
-Hyrax is made up of three 'architectural' pieces, the OLFS, libdap,
-the BES and a collection of modules that are loaded into the BES. The
+Hyrax is made up of three 'architectural' pieces, the OLFS, libdap & BES,
+and a collection of modules that are loaded into the BES. The
 OLFS, libdap and BES are in the 'src' directory and the BES modules
 are in 'src/modules'.
 
 * Customizing the Build *
 
 If you look n the Makefile.am, you'll see that build assumes that
-hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
-those to the configure scripts in the src/modules directory. If you
-want to have those configure scripts look for the HDF4, ..., packages
-and not use the --with-* option, just set the Makefile variable to
-nothing. 
+hdf4, 5 and netcdf are located in standard places _or_ in 'deps' at the
+top level of $shrew. The Makefile.am needs a tiny bit of editing if you're
+going to use the local versions of those. Otherwise it assumes that the
+modules' configure scripts are smart enough to find the correct libraries
+to use. 
 
-The ncml_module needs a version of ICU.  If this is not in /usr/local
-or /usr, the user can specify the installed ICU prefix using:
-
-   --with-icu-prefix=/path/to/icu/prefix
-
-Note: The user will also likely need to set LD_LIBRARY_PATH or 
-DYLD_LIBRARY_PATH to include the ICU prefix/lib directory.  Please 
-see the ncml_module INSTALL file for more info.
-
+If you are building OSX packages it's best to use our versions of the modules'
+dependencies since OSX is quite picky about where libraries are located.
+  
 * Debug Build *
 
 The entire shrew project can be built with debug flags (-g3, -O0, 
@@ -115,9 +147,9 @@ build_hyrax_debug instead.
 
 * Background *
 
-How it works: The build first runs autoreconf -i; configure; make and
+How it works: The build first runs autoreconf -ifv; configure; make and
 make install on libdap and then BES. Then it descends into src/modules
-and builds each module, running autoreconf -i; configure; make and
+and builds each module, running autoreconf -ifv; configure; make and
 make install. Because libdap and BES must be built and installed
 first, they are treated specially; the modules are built in any order
 (and the operations are carried out differently then for libdap and
@@ -173,7 +205,7 @@ If instead you want to make this instance of shrew on a branch, you
 might want it to grab the newest code of a specific branch of libdap.
 In that case, replace ^/trunk/libdap with the path to the branch:
 
-    ^/branch/libdap/4.0.0 src/libdap
+    ^/branch/libdap/4.0 src/libdap
 
 Note: The script set_externals.sh can be used to take the template
 'externals.txt' file and build a new file where the SVN directories

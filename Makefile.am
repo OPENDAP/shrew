@@ -64,22 +64,29 @@ olfs-compile:
 	cd src/olfs && ant $(olfs_version_arg)
 
 olfs-install: check-webapps-privileges olfs-compile
-	if [[ ! -d "$(TOMCAT_DIR)/webapps" ]]; then \
+	@if [[ ! -d "$(TOMCAT_DIR)/webapps" ]]; then \
 		echo "ERROR!! $(TOMCAT_DIR)/webapps is missing."; \
 		echo "ERROR!! There is no place to put the OLFS web application archive! OLFS NOT INSTALLED."; \
 	else \
 		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
+		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
 	fi
 
-# How do we run the OLFS-specific tests?
+
 olfs-check:
-	./src/olfs/make-check
-	
+	@echo "Checking for Hyrax Service..."
+	@-curl http://localhost:8080/opendap/version;\
+	if [ "$$?" -ne "0" ]; then \
+		echo "ERROR! Hyrax must be running at http://localhost:8080/opendap/ for these tests to work."; \
+	else \
+		echo "Running OLFS Tests."; \
+		cd src/olfs && ./make-check; \
+	fi
 	
 olfs-osx-package:
 	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package
 
-olfs-test:
+showEnv:
 	@echo "prefix: " $(prefix) 
 	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
 	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)

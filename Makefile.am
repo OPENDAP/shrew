@@ -64,11 +64,11 @@ olfs-compile:
 	cd src/olfs && ant $(olfs_version_arg)
 
 olfs-install: check-webapps-privileges olfs-compile
-	if [[ ! -d "$(prefix)/$(CATALINA_HOME)/webapps" ]]; then \
-		echo "ERROR!! $(prefix)/$(CATALINA_HOME)/webapps is missing."; \
+	if [[ ! -d "$(TOMCAT_DIR)/webapps" ]]; then \
+		echo "ERROR!! $(TOMCAT_DIR)/webapps is missing."; \
 		echo "ERROR!! There is no place to put the OLFS web application archive! OLFS NOT INSTALLED."; \
 	else \
-		cp src/olfs/build/dist/*.war $(prefix)/$(CATALINA_HOME)/webapps;\
+		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
 	fi
 
 # How do we run the OLFS-specific tests?
@@ -77,7 +77,12 @@ olfs-check:
 	
 	
 olfs-osx-package:
-	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(prefix)/$(CATALINA_HOME) osx-package
+	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package
+
+olfs-test:
+	@echo "prefix: " $(prefix) 
+	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
+	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
 
 	
 
@@ -99,6 +104,7 @@ depends-check:
 depends-install:
 	@echo "Building and installing dependencies."
 	(cd src/dependencies && ./depends-builder install $(prefix) ) > make.$@.log 2>&1
+	(./configure --prefix=$(prefix) ) >> make.$@.log 2>&1
 	echo "%%% $@ status: $$?" >> make.$@.log
 
 # This runs the depends-install task/target/action thingy from inside
@@ -210,8 +216,8 @@ install-data-local:
 	mv tmp.conf $(prefix)/etc/bes/bes.conf
 
 check-webapps-privileges:
-	if [[ -d "$(prefix)/$(CATALINA_HOME)/webapps" && ! -w "$(prefix)/$(CATALINA_HOME)/webapps" ]]; then \
-		echo "WARNING! This operation requires write permission on $(CATALINA_HOME)/webapps"; \
+	if [[ -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps" ]]; then \
+		echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi
 
 

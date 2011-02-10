@@ -49,23 +49,20 @@ fi
 AC_SUBST([bes_group])
 AC_MSG_NOTICE(Set the BES group to $bes_group)
 
-if test -d tomcat -o -L tomcat
+if ls -1d $prefix/apache-tomcat-*
 then
-    CATALINA_HOME=tomcat
-elif ls -1d apache-tomcat-*
-then
-    tc=`ls -1d apache-tomcat-*`
-    CATALINA_HOME=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
+    tc=`ls -1d $prefix/apache-tomcat-*`
+    TOMCAT_DIR=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
 else
-    AC_MSG_WARN(I could not find a local tomcat servlet engine directory)
+    AC_MSG_WARN(I could not find an instance of Tomcat in the directory $prefix)
 fi
 
-if test -n "$CATALINA_HOME"
+if test -n "$TOMCAT_DIR"
 then
-    AC_SUBST([CATALINA_HOME])
-    AC_MSG_NOTICE(Set the CATALINA_HOME to $CATALINA_HOME)
+    AC_SUBST([TOMCAT_DIR])
+    AC_MSG_NOTICE(Set the TOMCAT_DIR to $TOMCAT_DIR)
 else
-    AC_MSG_WARN(I did not set CATALINA_HOME to any value)
+    AC_MSG_WARN(I did not set TOMCAT_DIR to any value)
 fi
 
 AC_CONFIG_FILES([Makefile])

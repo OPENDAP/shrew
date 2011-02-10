@@ -18,10 +18,10 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
-netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
-icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+#netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+#hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+#icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
@@ -74,6 +74,13 @@ olfs-install: check-webapps-privileges olfs-compile
 # How do we run the OLFS-specific tests?
 olfs-check:
 	./src/olfs/make-check
+	
+	
+olfs-osx-package:
+	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(prefix)/$(CATALINA_HOME) osx-package
+
+	
+
 
 daemon: libdap bes modules-configure modules install-data-local
 
@@ -208,7 +215,7 @@ check-webapps-privileges:
 	fi
 
 
-.PHONY: world hyrax olfs olfs-compile olfs-install olfs-check 
+.PHONY: world hyrax olfs olfs-compile olfs-install olfs-check olfs-osx-package 
 .PHONY: daemon daemon-check libdap libdap-check bes bes-check 
 .PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
 .PHONY: rpm cccc check-webapps-privileges debug_msg pkg

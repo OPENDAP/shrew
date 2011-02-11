@@ -212,7 +212,8 @@ cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 
 clean-local:
-	cd src/olfs && ant clean
+	-cd src/olfs && ant clean
+	-rm *.log
 
 install-data-local: 
 	@echo "Bes will run as user " $(bes_user) " group " $(bes_group)

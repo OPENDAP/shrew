@@ -46,5 +46,8 @@ modules-pkg:
 cccc:
 	for dir in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $$dir $@; done
 
+clean-local:
+	-rm *.log
+
 .PHONY: install modules modules-check modules-distcheck modules-rpm \
 	modules-pkg cccc

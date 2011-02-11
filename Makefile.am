@@ -18,11 +18,12 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
-#netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
-#hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
-#icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
@@ -96,6 +97,8 @@ showEnv:
 	@echo "PATH: " $(PATH)
 	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
 	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
+	@echo "PACKAGE: " @PACKAGE@ 
+	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
 
 daemon: libdap bes modules-configure modules install-data-local
 
@@ -211,15 +214,36 @@ autoreconf:
 
 rpm: libdap-rpm bes-rpm modules-rpm
 
+
+
+################################################################
+#
+# Build the Hyrax meta-package for OS-X
+#
+PACKAGEMAKER=/Developer/usr/bin/packagemaker
+#pkg:
+
 pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package
 	@echo "Removing previous package installer collection..." 
 	@-rm -rf osx-packages 
 	@-mkdir -p osx-packages 
 	@echo "Collecting package installers" 
 	@find src -name \*.pkg -exec cp -R {} osx-packages \;
-	@echo "OS-X Package Installers Have Been Built." 
-
+	@echo "OS-X Package Installers Have Been Collected." 
+	@echo "Removing previous pmdoc..."
+	@rm -rf hyrax-package.pmdoc
+	@echo "Unpacking prototype pmdoc..."
+	@tar -xvf hyrax-package.pmdoc.proto.tar	
+	@echo "Installing pmdoc..."
+	@for i in `ls -1 hyrax-package.pmdoc/* | grep -v contents`; do \
+		echo "Fixing: " $${i}; \
+		cat $${i} | sed "s#_PACKAGES_DIR_#`pwd`/osx-packages#g"> foo ;\
+		mv foo $${i}; \
+	done
+	@echo "Building Meta Package..."
+	${PACKAGEMAKER} --doc hyrax-package.pmdoc --resources OSX_Resources --out osx-packages/@PACKAGE@-@PACKAGE_VERSION@.pkg
 	
+		
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 

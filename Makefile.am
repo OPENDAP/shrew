@@ -18,10 +18,11 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
-# netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-# hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
-# icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 
 modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
@@ -204,9 +205,11 @@ bes-configuration-tests:
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -f -v); done
 
-rpm:	libdap-rpm bes-rpm modules-rpm
+rpm: libdap-rpm bes-rpm modules-rpm
 
-pkg:	libdap-pkg bes-pkg modules-pkg olfs-osx-package
+pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package
+	@-mkdir osx-packages 
+	@find . -name \*.pkg -exec mv {} packages 
 
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
@@ -224,7 +227,7 @@ install-data-local:
 	mv tmp.conf $(prefix)/etc/bes/bes.conf
 
 check-webapps-privileges:
-	if [[ -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps" ]]; then \
+	@if [[ -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps" ]]; then \
 		echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi
 

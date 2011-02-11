@@ -127,24 +127,24 @@ depends-pkg:
 
 libdap: debug_msg
 	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1
-	echo "%%% configure status: $$?" >> make.$@.log
+	@echo "%%% configure status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "%%% make status: $$?" >> make.$@.log
+	@echo "%%% make status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "%%% install status: $$?" >> make.$@.log
+	@echo "%%% install status: $$?" >> make.$@.log
 
 libdap-check:
 	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
-	echo "%%% check status: $$?" >> make.libdap.log
+	@echo "%%% check status: $$?" >> make.libdap.log
 
 libdap-distcheck:
 	-$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
-	echo "%%% distcheck status: $$?" >> make.libdap.log
+	@echo "%%% distcheck status: $$?" >> make.libdap.log
 
 libdap-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
-	echo "%%% rpm status: $$?" >> make.libdap.log
+	@echo "%%% rpm status: $$?" >> make.libdap.log
 
 libdap-pkg:
 	@echo "Building OS-X Package for libdap."
@@ -154,24 +154,24 @@ libdap-pkg:
 bes: debug_msg
 	(cd src/$@ && ./configure $(params) --enable-developer) \
 		>> make.$@.log 2>&1
-	echo "%%% configure status: $$?" >> make.$@.log
+	@echo "%%% configure status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	echo "%%% make status: $$?" >> make.$@.log
+	@echo "%%% make status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	echo "%%% install status: $$?" >> make.$@.log
+	@echo "%%% install status: $$?" >> make.$@.log
 
 bes-check:
 	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.bes.log 2>&1
-	echo "%%% check status: $$?" >> make.bes.log
+	@echo "%%% check status: $$?" >> make.bes.log
 
 bes-distcheck:
 	-$(MAKE) $(MFLAGS) -C src/bes distcheck >> make.bes.log 2>&1
-	echo "%%% distcheck status: $$?" >> make.bes.log
+	@echo "%%% distcheck status: $$?" >> make.bes.log
 
 bes-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
 	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
-	echo "%%% rpm status: $$?" >> make.bes.log
+	@echo "%%% rpm status: $$?" >> make.bes.log
 
 bes-pkg:
 	@echo "Building OS-X Package for BES."
@@ -212,10 +212,13 @@ autoreconf:
 rpm: libdap-rpm bes-rpm modules-rpm
 
 pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package
+	@echo "Removing previous package installer collection..." 
 	@-rm -rf osx-packages 
 	@-mkdir -p osx-packages 
+	@echo "Collecting package installers" 
 	@find src -name \*.pkg -exec cp -R {} osx-packages \;
-	
+	@echo "OS-X Package Installers Have Been Built." 
+
 	
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done

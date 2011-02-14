@@ -27,6 +27,23 @@ AC_ARG_ENABLE([debug],
 
 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test x$build_hyrax_debug = xtrue])
 
+AC_ARG_ENABLE([osx],
+[AS_HELP_STRING([--enable-osx],
+[Configure the Makefile so that the variables are set for OSX (default is no)])],
+[case "${enableval}" in
+       yes) build_osx=true ;;
+       no)  build_osx=false ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-osx]) ;;
+     esac],
+[if ./conf/config.guess | grep 'apple'
+then 
+    build_osx=true
+else
+    build_osx=false
+fi])
+
+AM_CONDITIONAL([BUILD_OSX], [test x$build_osx = xtrue])
+
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([-Wall foreign])
 LT_PREREQ([2.2])

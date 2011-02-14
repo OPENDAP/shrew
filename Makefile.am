@@ -15,15 +15,26 @@ olfs_version_arg = -DHYRAX_VERSION=1.6.2 -DOLFS_VERSION=nightly.build
 
 prefix_arg = --prefix=$(prefix) --disable-option-checking
 
+# We have two different sets of these Makefile variables for OSX and Linux.
+# Doing this simplifes managing checkins and the like.
 # Only use these if you need them and make sure to double check the values. 
 # If they are wrong, configure in the modules dir will fail and that means 
 # other parts of the build will fail too.
+
+if BUILD_OSX
 netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 
-#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+else
+#netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+#hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
+#icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
+endif
 
 modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
@@ -242,8 +253,7 @@ pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package
 	done
 	@echo "Building Meta Package..."
 	${PACKAGEMAKER} --doc hyrax-package.pmdoc --resources OSX_Resources --out osx-packages/@PACKAGE@-@PACKAGE_VERSION@.pkg
-	
-		
+
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 

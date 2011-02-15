@@ -12,17 +12,18 @@ SUBDIRS = src/libdap src/bes src/modules
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
 prefix = --prefix=$(abs_top_builddir)
-netcdf = --with-netcdf=/usr/local/netcdf
-hdf4 = --with-hdf4=/usr/local/hdf4
-hdf5 = --with-hdf5=/usr/local/hdf5
-icu = --with-icu-prefix=/usr/local/icu
+
+netcdf = --with-netcdf=$(abs_top_builddir)/deps/netcdf-3.6.3
+hdf4 = --with-hdf4=$(abs_top_builddir)/deps/hdf-4.2.5
+hdf5 = --with-hdf5=$(abs_top_builddir)/deps/hdf5-1.8.5-patch1
+icu = --with-icu-prefix=$(abs_top_builddir)/deps/icu-3.6
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+release_params = $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
 # release_params = $(prefix) 
 
-debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) # $(icu)
+debug_params = $(debug_flags) $(prefix) $(netcdf) $(hdf4) $(hdf5) $(icu)
 # debug_params = $(debug_flags) $(prefix) 
 
 # Set params depending on whether configure was called with --enable-debug

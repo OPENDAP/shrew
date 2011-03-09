@@ -12,3 +12,4 @@
 ^/trunk/wcs_module src/modules/wcs_module
 ^/trunk/gateway_module src/modules/gateway_module
 ^/trunk/olfs src/olfs
+^/trunk/nbuilds nbuilds

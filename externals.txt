@@ -1,5 +1,6 @@
 ^/trunk/libdap src/libdap
 ^/trunk/bes src/bes
+^/trunk/hyrax-dependencies src/dependencies
 ^/trunk/dap-server src/modules/dap-server
 ^/trunk/freeform_handler src/modules/freeform_handler
 ^/trunk/fileout_netcdf src/modules/fileout_netcdf

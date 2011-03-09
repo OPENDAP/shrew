@@ -3,6 +3,6 @@ export PATH=$prefix/bin:$PATH
 
 autoreconf -i
 
-./configure
+./configure  --prefix=$prefix
 
 make world

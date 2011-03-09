@@ -13,7 +13,8 @@ dnl [TODO Consider taking the options as an
 dnl arg string...  We can't set CPPFLAGS directly
 dnl in the configure invocation since they get lost
 dnl in Makefile.am with explicit calls to bes and libdap
-dnl configure.]
+dnl configure.
+
 AC_ARG_ENABLE([debug],
 [AS_HELP_STRING([--enable-debug],
 [Build a debug (-g3 -O0) version of Hyrax 1.6.2 (default is no)])],
@@ -22,9 +23,26 @@ AC_ARG_ENABLE([debug],
        no)  build_hyrax_debug=false ;;
        *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
      esac],
-[build_hyrax_debug=false]
-)
+[build_hyrax_debug=false])
+
 AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test x$build_hyrax_debug = xtrue])
+
+AC_ARG_ENABLE([osx],
+[AS_HELP_STRING([--enable-osx],
+[Configure the Makefile so that the variables are set for OSX (default is no)])],
+[case "${enableval}" in
+       yes) build_osx=true ;;
+       no)  build_osx=false ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-osx]) ;;
+     esac],
+[if ./conf/config.guess | grep 'apple'
+then 
+    build_osx=true
+else
+    build_osx=false
+fi])
+
+AM_CONDITIONAL([BUILD_OSX], [test x$build_osx = xtrue])
 
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([-Wall foreign])
@@ -48,25 +66,20 @@ fi
 AC_SUBST([bes_group])
 AC_MSG_NOTICE(Set the BES group to $bes_group)
 
-if test -d tomcat -o -L tomcat
+if ls -1d $prefix/apache-tomcat-*
 then
-    CATALINA_HOME="`pwd`/tomcat"
-    AC_MSG_NOTICE(Found a local install of tomcat to use for OLFS install...)
-elif ls -1d apache-tomcat-*
-then
-    tc=`ls -1d apache-tomcat-*`
-    CATALINA_HOME="`pwd`/`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`"
-    AC_MSG_NOTICE(Found a local install of tomcat to use for OLFS install...)
+    tc=`ls -1d $prefix/apache-tomcat-*`
+    TOMCAT_DIR=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
 else
-    AC_MSG_WARN(I could not find a local tomcat servlet engine directory)
+    AC_MSG_WARN(I could not find an instance of Tomcat in the directory $prefix)
 fi
 
-if test -n "$CATALINA_HOME"
+if test -n "$TOMCAT_DIR"
 then
-    AC_SUBST([CATALINA_HOME])
-    AC_MSG_NOTICE(Set the CATALINA_HOME to $CATALINA_HOME)
+    AC_SUBST([TOMCAT_DIR])
+    AC_MSG_NOTICE(Set the TOMCAT_DIR to $TOMCAT_DIR)
 else
-    AC_MSG_WARN(I did not set CATALINA_HOME to any value)
+    AC_MSG_WARN(I did not set TOMCAT_DIR to any value)
 fi
 
 AC_CONFIG_FILES([Makefile])

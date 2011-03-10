@@ -7,9 +7,9 @@
 # the os name. Then run the script
 
 USER_PW=""
-os_name="OSX-10.5.8"
+os_name=""
 make_rpm=""
-make_pkg="yes"
+make_pkg=""
 
 do_the_build="yes"
 process_the_logs="yes"
@@ -80,7 +80,8 @@ platform=`conf/config.guess`
 target=all
 
 for build_name in libdap bes dap-server fileout_netcdf freeform_handler \
-    hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module
+    hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module \
+    csv_handler
 do
     make_log=${host}.${platform}.${build_name}.${target}.${date}
 

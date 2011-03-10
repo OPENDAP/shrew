@@ -1,6 +1,7 @@
 ^/trunk/libdap src/libdap
 ^/trunk/bes src/bes
 ^/trunk/hyrax-dependencies src/dependencies
+^/trunk/olfs src/olfs
 ^/trunk/dap-server src/modules/dap-server
 ^/trunk/freeform_handler src/modules/freeform_handler
 ^/trunk/fileout_netcdf src/modules/fileout_netcdf
@@ -11,5 +12,5 @@
 ^/trunk/wcs_gateway_module src/modules/wcs_gateway_module
 ^/trunk/wcs_module src/modules/wcs_module
 ^/trunk/gateway_module src/modules/gateway_module
-^/trunk/olfs src/olfs
-^/trunk/nbuilds nbuilds
+^/trunk/csv_handler src/modules/csv_handler
+

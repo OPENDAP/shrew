@@ -34,7 +34,7 @@ then
     autoreconf --verbose --force --install
     ./configure --prefix=$prefix
 
-    if echo $os_name | grep 'OSX\|osx' && test -d deps
+    if echo $os_name | grep 'OSX\|osx' && test ! -d deps
     then
 	make universe
     else

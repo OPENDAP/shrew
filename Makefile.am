@@ -174,7 +174,7 @@ bes: debug_msg
 	@echo "%%% install status: $$?" >> make.$@.log
 
 bes-check:
-	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.bes.log 2>&1
+	-$(MAKE) $(MFLAGS) -C src/bes check >> make.bes.log 2>&1
 	@echo "%%% check status: $$?" >> make.bes.log
 
 bes-distcheck:

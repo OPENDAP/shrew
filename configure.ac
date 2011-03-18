@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a c...
 
 AC_PREREQ([2.63])
-AC_INIT([hyrax], [1.6.2])
+AC_INIT([hyrax], [1.7.0])
 AC_CONFIG_AUX_DIR(conf)
 AC_CONFIG_MACRO_DIR([conf])
 
@@ -17,7 +17,7 @@ dnl configure.
 
 AC_ARG_ENABLE([debug],
 [AS_HELP_STRING([--enable-debug],
-[Build a debug (-g3 -O0) version of Hyrax 1.6.2 (default is no)])],
+[Build a debug (-g3 -O0) version of Hyrax 1.7.0 (default is no)])],
 [case "${enableval}" in
        yes) build_hyrax_debug=true ;;
        no)  build_hyrax_debug=false ;;

@@ -24,8 +24,8 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 if BUILD_OSX
 netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-#hdf4_arg = CC=$(prefix)/deps/hdf-4.2.5/bin/h4cc --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-hdf4_arg = CC=$(prefix)/deps/hdf-4.2.5/bin/h4cc --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 else

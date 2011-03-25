@@ -42,7 +42,12 @@ else
     build_osx=false
 fi])
 
-AM_CONDITIONAL([BUILD_OSX], [test x$build_osx = xtrue])
+if test "x$build_osx" = "xtrue"; then
+   AC_MSG_NOTICE(["Building for OS/X"])
+else
+   AC_MSG_NOTICE(["Not building for OS/X"])
+fi
+AM_CONDITIONAL([BUILD_OSX], [test "x$build_osx" = "xtrue"])
 
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE([-Wall foreign])

@@ -66,9 +66,9 @@ endif
 
 universe:
 if BUILD_OSX
-	$(MAKE) depends-install
+	$(MAKE) $(MFLAGS) depends-install
 endif
-	$(MAKE) world
+	$(MAKE) $(MFLAGS) world
 
 world: check-webapps-privileges autoreconf hyrax
 

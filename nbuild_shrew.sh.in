@@ -21,7 +21,7 @@ logs_archive="logs"
 
 export prefix=`pwd`
 export PATH=$prefix/bin:/usr/local/bin:$PATH
-export LD_LIBRARY_PATH=$prefix/lib
+export CATALINA_HOME=$prefix/apache-tomcat-6.0.29
 
 # Clean, update and initialize shrew
 if test "$do_the_build" = "yes"
@@ -52,9 +52,7 @@ then
     # Now run the packaging targets
     if test "$make_rpm" = "yes"
     then
-	make libdap-rpm
-	make bes-rpm
-	make modules-rpm
+	make rpm
     fi
 
     if test "$make_pkg" = "yes"

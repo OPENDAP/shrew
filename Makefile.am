@@ -13,7 +13,7 @@ debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-de
 
 olfs_version_arg = -DHYRAX_VERSION=1.7.0RC1 -DOLFS_VERSION=nightly.build
 
-prefix_arg = --prefix=$(prefix) --disable-option-checking
+prefix_arg = --prefix=$(prefix)
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -24,8 +24,8 @@ prefix_arg = --prefix=$(prefix) --disable-option-checking
 if BUILD_OSX
 netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
 #hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 else
@@ -35,7 +35,7 @@ hdf5_arg =
 icu_arg =
 endif
 
-modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
+modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg)
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
@@ -206,7 +206,7 @@ modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
 modules-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/modules modules-distcheck
+	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS=$(modules_arg) -C src/modules modules-distcheck
 
 modules-rpm:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-rpm

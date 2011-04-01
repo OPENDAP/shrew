@@ -206,7 +206,7 @@ modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
 modules-distcheck:
-	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS=$(modules_arg) -C src/modules modules-distcheck
+	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_arg)" -C src/modules modules-distcheck
 
 modules-rpm:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-rpm

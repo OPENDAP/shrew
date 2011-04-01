@@ -21,7 +21,7 @@ modules-check:
 
 modules-distcheck:
 	-for dir in $(SUBDIRS); do \
-		$(MAKE) $(MFLAGS) -C $$dir distcheck >> make.$$dir.log 2>&1; \
+		$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(DISTCHECK_CONFIGURE_FLAGS)" -C $$dir distcheck >> make.$$dir.log 2>&1; \
 		echo "%%% distcheck status: $$?" >> make.$$dir.log; \
 	done
 

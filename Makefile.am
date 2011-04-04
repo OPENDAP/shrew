@@ -23,8 +23,8 @@ prefix_arg = --prefix=$(prefix)
 
 if BUILD_OSX
 netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-#hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
@@ -229,13 +229,23 @@ rpm:	libdap-rpm bes-rpm modules-rpm
 #
 PACKAGEMAKER=/Developer/usr/bin/packagemaker
 
-pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package
-	@echo "Removing previous package installer collection..." 
+# I removed depends-pkg since that rebuilds the entire dependency
+# subtree. I want to move the deps so that they are not built every
+# time we run a nightly build and/or have to debug this Makefile.am.
+# Also, removed the metapackage build code since it's very hard to
+# make general enough to work in a nightly build. jhrg
+
+pkg: libdap-pkg bes-pkg modules-pkg olfs-osx-package
+	@echo "Removing previous package collection..." 
 	@-rm -rf osx-packages 
 	@-mkdir -p osx-packages 
-	@echo "Collecting package installers" 
+	@echo "Collecting packages" 
 	@find src -name \*.pkg -exec cp -R {} osx-packages \;
-	@echo "OS-X Package Installers Have Been Collected." 
+	@echo "OS-X Packages have been collected" 
+
+# I don't know how this works... jhrg
+
+meta-pkg:
 	@echo "Removing previous pmdoc..."
 	@rm -rf hyrax-package.pmdoc
 	@echo "Unpacking prototype pmdoc..."

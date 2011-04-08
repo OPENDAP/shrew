@@ -115,8 +115,6 @@ do
 	pkg_status="N/A"
     fi
 
-    echo "pkg_status: [$pkg_status]"
-
     if test -z "$build_status"; then build_status=1; fi
     if test -z "$check_status"; then check_status=1; fi
     if test -z "$install_status"; then install_status=1; fi

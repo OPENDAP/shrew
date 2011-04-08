@@ -28,6 +28,7 @@ if test "$do_the_build" = "yes"
 then
     rm make.*.log
     rm src/modules/make.*.log
+    rm -rf bin etc include lib share var
 
     make -k distclean
     svn update --accept theirs-full

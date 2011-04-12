@@ -23,9 +23,8 @@ prefix_arg = --prefix=$(prefix)
 
 if BUILD_OSX
 netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-4.2.5 --enable-short-name
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 else
@@ -58,17 +57,9 @@ if BUILD_HYRAX_DEBUG
 	@echo "* -------------------------------------*"
 endif
 
-# The src/* directories are repeated here because the first builds
-# are special; we must run configure, make and make install first for
-# libdap and then for bes and then for the modules. Other targets are
-# like 'make' are normal automake targets and will work once the
-# initial build is done.
-
-universe:
-if BUILD_OSX
-	$(MAKE) $(MFLAGS) depends-install
-endif
-	$(MAKE) $(MFLAGS) world
+# This is really for the OS/X build, but it could be used for linux
+# too. See above for the conditional flags passed to the deps code.
+universe: depends-install world
 
 world: check-webapps-privileges autoreconf hyrax
 
@@ -87,7 +78,6 @@ olfs-install: check-webapps-privileges olfs-compile
 		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
 		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
 	fi
-
 
 olfs-check:
 	@echo "Checking for Hyrax Service..."
@@ -127,7 +117,6 @@ depends-check:
 depends-install:
 	@echo "Building and installing dependencies."
 	(cd src/dependencies && ./depends-builder install $(prefix) ) > make.$@.log 2>&1
-	(./configure --prefix=$(prefix) ) >> make.$@.log 2>&1
 	@echo "%%% $@ status: $$?" >> make.$@.log
 
 # This runs the depends-install task/target/action thingy from inside
@@ -135,7 +124,7 @@ depends-install:
 # to make).
 depends-pkg:
 	@echo "Building OS-X Package for Hyrax dependencies."
-	@(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) > make.$@.log 2>&1
+	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) > make.$@.log 2>&1
 	@echo "%%% mkPackage status: $$?" >> make.$@.log
 
 libdap: debug_msg

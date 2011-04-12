@@ -116,13 +116,13 @@ do
 	pkg_status="N/A"
     fi
 
-    if test -z "$build_status"; then build_status=1; fi
-    if test -z "$check_status"; then check_status=1; fi
-    if test -z "$install_status"; then install_status=1; fi
-    if test -z "$distcheck_status"; then distcheck_status=1; fi
-    if test -z "$rpm_status"; then rpm_status=1; fi
-    if test -z "$pkg_status"; then pkg_status=1; fi
-     
+    # if test $build_status -eq 0; then build_status=1; fi
+    # if test $check_status -eq 0; then check_status=1; fi
+    # if test $install_status -eq 0; then install_status=1; fi
+    # if test $distcheck_status -eq 0; then distcheck_status=1; fi
+    # if test $rpm_status -eq 0; then rpm_status=1; fi
+    # if test $pkg_status -eq 0; then pkg_status=1; fi
+      
     results="compile: $build_status, check: $check_status, install: $install_status, distcheck: $distcheck_status, rpm: $rpm_status, pkg: $pkg_status"
 
     echo "Results: $results" >> $make_log 2>&1

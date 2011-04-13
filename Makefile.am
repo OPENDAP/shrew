@@ -22,9 +22,9 @@ prefix_arg = --prefix=$(prefix)
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg = --with-netcdf=$(prefix)/deps/netcdf-3.6.3
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+netcdf_arg=--with-netcdf=$(prefix)/deps/netcdf-4.1.2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 else
@@ -154,8 +154,7 @@ libdap-pkg:
 	@echo "%%% pkg status: $$?" >> make.libdap.log
 
 bes: debug_msg
-	(cd src/$@ && ./configure $(params) --enable-developer) \
-		>> make.$@.log 2>&1
+	(cd src/$@ && ./configure $(params) ) >> make.$@.log 2>&1
 	@echo "%%% configure status: $$?" >> make.$@.log
 	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
 	@echo "%%% make status: $$?" >> make.$@.log

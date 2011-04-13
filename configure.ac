@@ -25,7 +25,12 @@ AC_ARG_ENABLE([debug],
      esac],
 [build_hyrax_debug=false])
 
-AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test x$build_hyrax_debug = xtrue])
+if test "x$build_hyrax_debug" = "xtrue"; then
+   AC_MSG_NOTICE(["Building debug version"])
+else
+   AC_MSG_NOTICE(["Not building debug version"])
+fi
+AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test "x$build_hyrax_debug" = "xtrue"])
 
 AC_ARG_ENABLE([osx],
 [AS_HELP_STRING([--enable-osx],

@@ -11,7 +11,7 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
 
-olfs_version_arg = -DHYRAX_VERSION=1.7.0RC1 -DOLFS_VERSION=nightly.build
+olfs_version_arg = -DHYRAX_VERSION=1.7.0RC4 -DOLFS_VERSION=1.8.0
 
 prefix_arg = --prefix=$(prefix)
 
@@ -22,8 +22,8 @@ prefix_arg = --prefix=$(prefix)
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg=--with-netcdf=$(prefix)/deps/netcdf-4.1.2
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2 --enable-cf=yes
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6

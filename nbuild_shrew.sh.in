@@ -7,6 +7,7 @@
 # the os name. Then run the script
 
 USER_PW=""
+# os_name --> "linux-32_hyrax_1.7"
 os_name=""
 make_rpm=""
 make_pkg=""
@@ -19,9 +20,7 @@ logs_archive="logs"
 
 # First build, then process all of the log files and upload the results
 
-export prefix=`pwd`
-export PATH=$prefix/bin:/usr/local/bin:$PATH
-export CATALINA_HOME=$prefix/apache-tomcat-6.0.29
+source spath.sh
 
 # Clean, update and initialize shrew
 if test "$do_the_build" = "yes"

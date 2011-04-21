@@ -13,3 +13,6 @@ prefix=$1
 export prefix=${prefix:-$PWD}
 export PATH=$prefix/bin:$PATH
 export TOMCAT_DIR=$prefix/apache-tomcat-6.0.29
+# Added because references to catalina_home will determine which
+# copy of tomcat ./apache-tomcat-*/bin/startup.sh actually starts.
+export CATLINA_HOME=$TOMCAT_DIR

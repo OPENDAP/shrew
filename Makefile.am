@@ -58,40 +58,27 @@ if BUILD_HYRAX_DEBUG
 endif
 
 # This is really for the OS/X build, but it could be used for linux
-# too. See above for the conditional flags passed to the deps code.
-universe: depends-install world
+# too. See above for the conditional variables passed to/for the deps code
+.PHONY: universe
+universe:
+	$(MAKE) depends-install 
+	$(MAKE) world
 
-world: check-webapps-privileges autoreconf hyrax
+# Note that for a parallel build (make -j N where N > 1) all of the
+# dependencies are run in parallel, then the actions are rule in series.
+# Thus for the hyrax target, each of check-web..., daemon and olfs are
+# run at the same time while doe daemon, libdap, bes, ..., are all built one
+# after the other.
 
+.PHONY: world
+world: autoreconf 
+	$(MAKE) hyrax
+
+.PHONY: hyrax
 hyrax: check-webapps-privileges daemon olfs
 
-olfs: check-webapps-privileges olfs-compile olfs-install
-
-olfs-compile:
-	cd src/olfs && ant $(olfs_version_arg)
-
-olfs-install: check-webapps-privileges olfs-compile
-	@if [[ ! -d "$(TOMCAT_DIR)/webapps" ]]; then \
-		echo "ERROR!! $(TOMCAT_DIR)/webapps is missing."; \
-		echo "ERROR!! There is no place to put the OLFS web application archive! OLFS NOT INSTALLED."; \
-	else \
-		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
-		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
-	fi
-
-olfs-check:
-	@echo "Checking for Hyrax Service..."
-	@-curl http://localhost:8080/opendap/version;\
-	if [ "$$?" -ne "0" ]; then \
-		echo "ERROR! Hyrax must be running at http://localhost:8080/opendap/ for these tests to work."; \
-	else \
-		echo "Running OLFS Tests."; \
-		cd src/olfs && ./make-check; \
-	fi
-
-olfs-osx-package:
-	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package
-
+.PHONY: show_env showEnv
+show_env:
 showEnv:
 	@echo "prefix: " $(prefix) 
 	@echo "PATH: " $(PATH)
@@ -100,116 +87,164 @@ showEnv:
 	@echo "PACKAGE: " @PACKAGE@ 
 	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
 
-daemon: libdap bes modules-configure modules install-data-local
+.PHONY: daemon
+daemon: 
+	$(MAKE) libdap 
+	$(MAKE) bes 
+	$(MAKE) modules-configure 
+	$(MAKE) modules 
+	$(MAKE) install-data-local
 
+.PHONY: daemon-check
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
+.PHONY: depends depends-install
 depends:
-	@echo "Building dependencies."
-	(cd src/dependencies && ./depends-builder build $(prefix) ) > make.$@.log 2>&1
-	@echo "%%% $@ status: $$?" >> make.$@.log
-
-depends-check: 
-	@echo "Building and checking dependencies."
-	(cd src/dependencies && ./depends-builder check $(prefix) ) > make.$@.log 2>&1
-	@echo "%%% $@ status: $$?" >> make.$@.log
-
 depends-install:
 	@echo "Building and installing dependencies."
-	(cd src/dependencies && ./depends-builder install $(prefix) ) > make.$@.log 2>&1
-	@echo "%%% $@ status: $$?" >> make.$@.log
+	(cd src/dependencies && ./depends-builder install $(prefix) ) 2>&1 | tee make.$@.log
+	@echo "%%% $@ status: $$?" 2>&1 | tee -a  make.$@.log
 
-# This runs the depends-install task/target/action thingy from inside
-# the mlPackage script (so no need to run it here as a separate call
-# to make).
+.PHONY: depends-pkg
 depends-pkg:
 	@echo "Building OS-X Package for Hyrax dependencies."
-	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) > make.$@.log 2>&1
+	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) 2>&1 | tee make.$@.log
 	@echo "%%% mkPackage status: $$?" >> make.$@.log
 
+.PHONY: olfs
+olfs: olfs-install
+
+.PHONY: olfs-compile
+olfs-compile:
+	(cd src/olfs && ant $(olfs_version_arg) )
+
+.PHONY: olfs-install
+olfs-install: check-webapps-privileges olfs-compile
+	@if test ! -d "$(TOMCAT_DIR)/webapps"; then \
+		echo "ERROR: $(TOMCAT_DIR)/webapps is missing."; \
+	else \
+		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
+		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
+	fi
+
+.PHONY: olfs-check
+olfs-check:
+	@echo "Checking for Hyrax Service..."
+	@-curl http://localhost:8080/opendap/version;\
+	if test "$$?" -ne "0"; then \
+		echo "ERROR! Hyrax must be running at http://localhost:8080/opendap/ for these tests to work."; \
+	else \
+		echo "Running OLFS Tests."; \
+		(cd src/olfs && ./make-check); \
+	fi
+
+.PHONY: olfs-osx-package
+olfs-osx-package:
+	(cd src/olfs && \
+	 ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package)
+
+.PHONY: libdap
 libdap: debug_msg
-	(cd src/$@ && ./configure $(params) ) > make.$@.log 2>&1
-	@echo "%%% configure status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	@echo "%%% make status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	@echo "%%% install status: $$?" >> make.$@.log
+	(cd src/$@ && ./configure $(params) ) 2>&1 | tee make.$@.log
+	@echo "%%% configure status: $$?" 2>&1 | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log
+	@echo "%%% make status: $$?" 2>&1 | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log
+	@echo "%%% install status: $$?" 2>&1 | tee -a make.$@.log
 
+.PHONY: libdap-check
 libdap-check:
-	-$(MAKE) $(MFLAGS) -C src/libdap check >> make.libdap.log 2>&1
-	@echo "%%% check status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -j $(SLOTS) -C src/libdap check 2>&1 | tee -a make.libdap.log
+	@echo "%%% check status: $$?" 2>&1 | tee -a make.libdap.log
 
+.PHONY: libdap-distcheck
 libdap-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/libdap distcheck >> make.libdap.log 2>&1
-	@echo "%%% distcheck status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -C src/libdap distcheck 2>&1 | tee -a make.libdap.log 2>&1
+	@echo "%%% distcheck status: $$?" 2>&1 | tee -a make.libdap.log
 
+.PHONY: libdap-rpm
 libdap-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/libdap rpm >> make.libdap.log 2>&1
-	@echo "%%% rpm status: $$?" >> make.libdap.log
+	$(MAKE) $(MFLAGS) -C src/libdap rpm 2>&1 | tee -a make.libdap.log
+	@echo "%%% rpm status: $$?" 2>&1 | tee -a make.libdap.log
 
+.PHONY: libdap-pkg
 libdap-pkg:
 	@echo "Building OS-X Package for libdap."
-	-$(MAKE) $(MFLAGS) -C src/libdap pkg >> make.libdap.log 2>&1
-	@echo "%%% pkg status: $$?" >> make.libdap.log
+	-$(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1 | tee -a make.libdap.log
+	@echo "%%% pkg status: $$?" 2>&1 | tee -a make.libdap.log
 
+.PHONY: bes
 bes: debug_msg
-	(cd src/$@ && ./configure $(params) ) >> make.$@.log 2>&1
-	@echo "%%% configure status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ >> make.$@.log 2>&1
-	@echo "%%% make status: $$?" >> make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install >> make.$@.log 2>&1
-	@echo "%%% install status: $$?" >> make.$@.log
+	(cd src/$@ && ./configure $(params) ) 2>&1 | tee make.$@.log
+	@echo "%%% configure status: $$?" 2>&1 | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log
+	@echo "%%% make status: $$?" 2>&1 | tee -a make.$@.log
+	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log
+	@echo "%%% install status: $$?" 2>&1 | tee -a make.$@.log
 
+.PHONY: bes-check
 bes-check:
-	-$(MAKE) $(MFLAGS) -C src/bes check >> make.bes.log 2>&1
-	@echo "%%% check status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/bes check 2>&1 | tee -a  make.bes.log
+	@echo "%%% check status: $$?" 2>&1 | tee -a  make.bes.log
 
+.PHONY: bes-distcheck
 bes-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/bes distcheck >> make.bes.log 2>&1
-	@echo "%%% distcheck status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/bes distcheck 2>&1 | tee -a make.bes.log
+	@echo "%%% distcheck status: $$?" 2>&1 | tee -a  make.bes.log
 
+.PHONY: bes-rpm
 bes-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/bes rpm >> make.bes.log 2>&1
-	@echo "%%% rpm status: $$?" >> make.bes.log
+	$(MAKE) $(MFLAGS) -C src/bes rpm 2>&1 | tee -a  make.bes.log
+	@echo "%%% rpm status: $$?" 2>&1 | tee -a  make.bes.log
 
+.PHONY: bes-pkg
 bes-pkg:
 	@echo "Building OS-X Package for BES."
-	-$(MAKE) $(MFLAGS) -C src/bes pkg >> make.bes.log 2>&1
-	@echo "%%% pkg status: $$?" >> make.bes.log
+	-$(MAKE) $(MFLAGS) -C src/bes pkg 2>&1 | tee -a make.bes.log
+	@echo "%%% pkg status: $$?" 2>&1 | tee -a make.bes.log
 
 # If we don't ignore errors here, a problem with any single configure
 # script on the host will halt all the remaining configure and make operations
 # Then make check will run, but will fail for some/most handlers since 
 # a bunch of the configure scripts never ran. It's also very confusing to 
 # debug.
+.PHONY: modules-configure
 modules-configure:
 	(cd src/modules && ./configure $(params))
 
+.PHONY: modules
 modules: debug_msg
 	-$(MAKE) $(MFLAGS) -C src/modules modules
 
+.PHONY: modules-check
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
+.PHONY: modules-distcheck
 modules-distcheck:
 	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_arg)" -C src/modules modules-distcheck
 
+.PHONY: modules-rpm
 modules-rpm:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-rpm
 
+.PHONY: modules-pkg
 modules-pkg:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
+.PHONY: bes-configuration-tests
 bes-configuration-tests:
 	besctl start
 	-$(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests
 	besctl stop
 
+.PHONY: autoreconf
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -f -v); done
 
+.PHONY: rpm
 rpm:	libdap-rpm bes-rpm modules-rpm
 
 #
@@ -223,6 +258,7 @@ PACKAGEMAKER=/Developer/usr/bin/packagemaker
 # Also, removed the metapackage build code since it's very hard to
 # make general enough to work in a nightly build. jhrg
 
+.PHONY: pkg
 pkg: libdap-pkg bes-pkg modules-pkg olfs-osx-package
 	@echo "Removing previous package collection..." 
 	@-rm -rf osx-packages 
@@ -232,7 +268,7 @@ pkg: libdap-pkg bes-pkg modules-pkg olfs-osx-package
 	@echo "OS-X Packages have been collected" 
 
 # I don't know how this works... jhrg
-
+.PHONY: meta-pkg
 meta-pkg:
 	@echo "Removing previous pmdoc..."
 	@rm -rf hyrax-package.pmdoc
@@ -247,27 +283,28 @@ meta-pkg:
 	@echo "Building Meta Package..."
 	${PACKAGEMAKER} --doc hyrax-package.pmdoc --resources OSX_Resources --out osx-packages/@PACKAGE@-@PACKAGE_VERSION@.pkg
 
+.PHONY: cccc
 cccc:
 	for d in $(SUBDIRS); do $(MAKE) $(MFLAGS) -C $${d} $@; done
 
+.PHONY: clean-local
 clean-local:
 	-cd src/olfs && ant clean
 	-rm *.log
 
+.PHONY: install-data-local
 install-data-local: 
 	@echo "Bes will run as user " $(bes_user) " group " $(bes_group)
 	cat $(prefix)/etc/bes/bes.conf \
-		| sed -e "s/user_name/$(bes_user)/g" \
-		      -e "s/group_name/$(bes_group)/g" \
-		      -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" > tmp.conf
+	    | sed -e "s/user_name/$(bes_user)/g" \
+		  -e "s/group_name/$(bes_group)/g" \
+		  -e "s@\.\/bes\.log@$(abs_top_builddir)/var/bes.log@g" \
+            > tmp.conf
 	mv tmp.conf $(prefix)/etc/bes/bes.conf
 
+.PHONY: check-webapps-privileges
 check-webapps-privileges:
-	@if [[ -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps" ]]; then \
-		echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
+	@if test -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps"; \
+        then \
+	    echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi
-
-.PHONY: universe world hyrax olfs olfs-compile olfs-install olfs-check olfs-osx-package 
-.PHONY: daemon daemon-check libdap libdap-check bes bes-check 
-.PHONY: modules modules-check bes-configuration-tests bes-conf autoreconf 
-.PHONY: rpm cccc check-webapps-privileges debug_msg pkg

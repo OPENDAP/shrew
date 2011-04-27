@@ -18,6 +18,11 @@ prefix=$1
 export prefix=${prefix:-$PWD}
 export PATH=$prefix/bin:$PATH
 
+# This is needed for the linux builds; if using the deps libraries
+# on linux, those directories also need to be on LD_LIBRARY_PATH.
+export LD_LIBRARY_PATH=$prefix/lib
+
+# Find tomcat - it might not be installed in $prefix yet.
 unset tc
 export tc=`ls -1 $prefix/src/dependencies/downloads/apache-tomcat-*`
 

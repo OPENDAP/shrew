@@ -60,8 +60,7 @@ endif
 # This is really for the OS/X build, but it could be used for linux
 # too. See above for the conditional variables passed to/for the deps code
 .PHONY: universe
-universe:
-	$(MAKE) depends-install 
+universe: depends-install 
 	$(MAKE) world
 
 # Note that for a parallel build (make -j N where N > 1) all of the
@@ -75,7 +74,9 @@ world: autoreconf
 	$(MAKE) hyrax
 
 .PHONY: hyrax
-hyrax: check-webapps-privileges daemon olfs
+hyrax: check-webapps-privileges daemon
+
+# olfs
 
 .PHONY: show_env showEnv
 show_env:
@@ -87,10 +88,11 @@ showEnv:
 	@echo "PACKAGE: " @PACKAGE@ 
 	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
 
+# Note that the bes Makefile.am seems broken WRT parallel builds. jhrg 4/27/11
 .PHONY: daemon
 daemon: 
 	$(MAKE) libdap 
-	$(MAKE) bes 
+	$(MAKE) -j 1 bes
 	$(MAKE) modules-configure 
 	$(MAKE) modules 
 	$(MAKE) install-data-local

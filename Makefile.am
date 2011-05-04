@@ -104,14 +104,14 @@ daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 depends:
 depends-install:
 	@echo "Building and installing dependencies."
-	(cd src/dependencies && ./depends-builder install $(prefix) ) 2>&1 | tee make.$@.log
-	@echo "%%% $@ status: $$?" 2>&1 | tee -a  make.$@.log
+	(cd src/dependencies && ./depends-builder install $(prefix) 2>&1; \
+		echo "%%% $@ status: $$?") | tee make.$@.log
 
 .PHONY: depends-pkg
 depends-pkg:
 	@echo "Building OS-X Package for Hyrax dependencies."
-	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) ) 2>&1 | tee make.$@.log
-	@echo "%%% mkPackage status: $$?" >> make.$@.log
+	(cd src/dependencies && ./mkPackage @PACKAGE_VERSION@ $(prefix) 2>&1; \
+		echo "%%% mkPackage status: $$?" ) | tee make.$@.log
 
 .PHONY: olfs
 olfs: olfs-install
@@ -147,65 +147,51 @@ olfs-osx-package:
 
 .PHONY: libdap
 libdap: debug_msg
-	(cd src/$@ && ./configure $(params) ) 2>&1 | tee make.$@.log
-	@echo "%%% configure status: $$?" 2>&1 | tee -a make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log
-	@echo "%%% make status: $$?" 2>&1 | tee -a make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log
-	@echo "%%% install status: $$?" 2>&1 | tee -a make.$@.log
+	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
+	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
 .PHONY: libdap-check
 libdap-check:
-	-$(MAKE) $(MFLAGS) -j $(SLOTS) -C src/libdap check 2>&1 | tee -a make.libdap.log
-	@echo "%%% check status: $$?" 2>&1 | tee -a make.libdap.log
+	-($(MAKE) $(MFLAGS) -C src/libdap check 2>&1; echo "%%% check status: $$?") | tee -a make.libdap.log
 
 .PHONY: libdap-distcheck
 libdap-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/libdap distcheck 2>&1 | tee -a make.libdap.log 2>&1
-	@echo "%%% distcheck status: $$?" 2>&1 | tee -a make.libdap.log
+	-($(MAKE) $(MFLAGS) -C src/libdap distcheck 2>&1; echo "%%% distcheck status: $$?") | tee -a make.libdap.log 2>&1
 
 .PHONY: libdap-rpm
 libdap-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/libdap rpm 2>&1 | tee -a make.libdap.log
-	@echo "%%% rpm status: $$?" 2>&1 | tee -a make.libdap.log
+	($(MAKE) $(MFLAGS) -C src/libdap rpm 2>&1; echo "%%% rpm status: $$?") | tee -a make.libdap.log
 
 .PHONY: libdap-pkg
 libdap-pkg:
 	@echo "Building OS-X Package for libdap."
-	-$(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1 | tee -a make.libdap.log
-	@echo "%%% pkg status: $$?" 2>&1 | tee -a make.libdap.log
+	-($(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.libdap.log
 
 .PHONY: bes
 bes: debug_msg
-	(cd src/$@ && ./configure $(params) ) 2>&1 | tee make.$@.log
-	@echo "%%% configure status: $$?" 2>&1 | tee -a make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ 2>&1 | tee -a make.$@.log
-	@echo "%%% make status: $$?" 2>&1 | tee -a make.$@.log
-	$(MAKE) $(MFLAGS) -C src/$@ install 2>&1 | tee -a make.$@.log
-	@echo "%%% install status: $$?" 2>&1 | tee -a make.$@.log
+	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
+	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
 .PHONY: bes-check
 bes-check:
-	-$(MAKE) $(MFLAGS) -C src/bes check 2>&1 | tee -a  make.bes.log
-	@echo "%%% check status: $$?" 2>&1 | tee -a  make.bes.log
+	-($(MAKE) $(MFLAGS) -C src/bes check 2>&1; echo "%%% check status: $$?") | tee -a  make.bes.log
 
 .PHONY: bes-distcheck
 bes-distcheck:
-	-$(MAKE) $(MFLAGS) -C src/bes distcheck 2>&1 | tee -a make.bes.log
-	@echo "%%% distcheck status: $$?" 2>&1 | tee -a  make.bes.log
+	-($(MAKE) $(MFLAGS) -C src/bes distcheck 2>&1; echo "%%% distcheck status: $$?") | tee -a make.bes.log
 
 .PHONY: bes-rpm
 bes-rpm:
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/rpm\"";\
-	$(MAKE) $(MFLAGS) -C src/bes rpm 2>&1 | tee -a  make.bes.log
-	@echo "%%% rpm status: $$?" 2>&1 | tee -a  make.bes.log
+	($(MAKE) $(MFLAGS) -C src/bes rpm 2>&1; echo "%%% rpm status: $$?") | tee -a  make.bes.log
 
 .PHONY: bes-pkg
 bes-pkg:
 	@echo "Building OS-X Package for BES."
-	-$(MAKE) $(MFLAGS) -C src/bes pkg 2>&1 | tee -a make.bes.log
-	@echo "%%% pkg status: $$?" 2>&1 | tee -a make.bes.log
+	-($(MAKE) $(MFLAGS) -C src/bes pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.bes.log
 
 # If we don't ignore errors here, a problem with any single configure
 # script on the host will halt all the remaining configure and make operations

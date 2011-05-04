@@ -11,10 +11,8 @@ SUBDIRS = dap-server netcdf_handler freeform_handler fileout_netcdf \
 modules: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) -C $@ 2>&1 | tee make.$@.log
-	echo "%%% make status: $$?" 2>&1 | tee -a  make.$@.log
-	$(MAKE) -C $@ install 2>&1 | tee -a  make.$@.log
-	echo "%%% install status: $$?" 2>&1 | tee -a  make.$@.log
+	($(MAKE) -C $@ 2>&1; echo "%%% make status: $$?") | tee make.$@.log
+	($(MAKE) -C $@ install 2>&1; echo "%%% install status: $$?") | tee -a  make.$@.log
 
 # .PHONY: modules-check
 # modules-check: $(SUBDIRS)
@@ -37,22 +35,20 @@ SUBDIRS_CHECK = $(SUBDIRS:%=%-check)
 modules-check: $(SUBDIRS_CHECK)
 
 %-check:
-	$(MAKE) -C $* check 2>&1 | tee -a make.$*.log
-	echo "%%% check status: $$?" 2>&1 | tee -a make.$*.log
+	($(MAKE) -C $* check 2>&1; echo "%%% check status: $$?") \
+	    | tee -a make.$*.log
 
 SUBDIRS_DISTCHECK = $(SUBDIRS:%=%-distcheck)
-#.PHONY: $(SUBDIRS_DISTCHECK)
 
 .PHONY: modules-distcheck
 modules-distcheck: $(SUBDIRS_DISTCHECK)
 
 %-distcheck: 
-	$(MAKE) DISTCHECK_CONFIGURE_FLAGS="$(DISTCHECK_CONFIGURE_FLAGS)" \
-	        -C $* distcheck 2>&1 | tee -a  make.$*.log
-	echo "%%% distcheck status: $$?" 2>&1 | tee -a  make.$*.log
+	($(MAKE) DISTCHECK_CONFIGURE_FLAGS="$(DISTCHECK_CONFIGURE_FLAGS)" \
+	        -C $* distcheck 2>&1; echo "%%% distcheck status: $$?") \
+	        | tee -a  make.$*.log
 
 SUBDIRS_RPM = $(SUBDIRS:%=%-rpm)
-#.PHONY: $(SUBDIRS_RPM)
 
 .PHONY: modules-rpm
 modules-rpm: $(SUBDIRS_RPM)
@@ -61,18 +57,17 @@ modules-rpm: $(SUBDIRS_RPM)
 # to two levels up to get the rpms all deposited in the same place.
 %-rpm: 
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/../../rpm\"";\
-	$(MAKE) -C $* rpm 2>&1 | tee -a  make.$*.log
-	echo "%%% rpm status: $$?" 2>&1 | tee -a  make.$*.log
+	($(MAKE) -C $* rpm 2>&1; echo "%%% rpm status: $$?") \
+	    | tee -a  make.$*.log
 
 SUBDIRS_PKG = $(SUBDIRS:%=%-pkg)
-#.PHONY: $(SUBDIRS_PKG)
 
 .PHONY: modules-pkg
 modules-pkg: $(SUBDIRS_PKG)
 
 %-pkg: 
-	$(MAKE) -C $* pkg  2>&1 | tee -a make.$*.log
-	echo "%%% pkg status: $$?" 2>&1 | tee -a  make.$*.log
+	($(MAKE) -C $* pkg  2>&1; echo "%%% pkg status: $$?") \
+	    | tee -a make.$*.log
 
 .PHONY: cccc
 cccc:

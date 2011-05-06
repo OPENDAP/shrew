@@ -23,8 +23,8 @@ prefix_arg = --prefix=$(prefix)
 
 if BUILD_OSX
 netcdf_arg=--with-netcdf=$(prefix)/deps/netcdf-4.1.2
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.5-patch1
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 else
@@ -50,6 +50,7 @@ params = $(release_params)
 endif
 
 # Print if we are building debug early in build
+.PHONY:
 debug_msg:
 if BUILD_HYRAX_DEBUG
 	@echo "* -------------------------------------*"
@@ -61,17 +62,24 @@ endif
 # too. See above for the conditional flags passed to the deps code.
 universe: depends-install world
 
-world: check-webapps-privileges autoreconf hyrax
+.PHONY:
+world: check-webapps-privileges autoreconf
+	$(MAKE) hyrax
 
+.PHONY:
 hyrax: check-webapps-privileges daemon olfs
 
-olfs: check-webapps-privileges olfs-compile olfs-install
+.PHONY:
+olfs: check-webapps-privileges olfs-compile 
+	$(MAKE) $(MFLAGS) olfs-install
 
+.PHONY:
 olfs-compile:
 	cd src/olfs && ant $(olfs_version_arg)
 
-olfs-install: check-webapps-privileges olfs-compile
-	@if [[ ! -d "$(TOMCAT_DIR)/webapps" ]]; then \
+.PHONY:
+olfs-install: check-webapps-privileges
+	@if test ! -d "$(TOMCAT_DIR)/webapps"; then \
 		echo "ERROR!! $(TOMCAT_DIR)/webapps is missing."; \
 		echo "ERROR!! There is no place to put the OLFS web application archive! OLFS NOT INSTALLED."; \
 	else \
@@ -79,6 +87,7 @@ olfs-install: check-webapps-privileges olfs-compile
 		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
 	fi
 
+.PHONY:
 olfs-check:
 	@echo "Checking for Hyrax Service..."
 	@-curl http://localhost:8080/opendap/version;\
@@ -89,6 +98,7 @@ olfs-check:
 		cd src/olfs && ./make-check; \
 	fi
 
+.PHONY:
 olfs-osx-package:
 	cd src/olfs && ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package
 
@@ -100,7 +110,21 @@ showEnv:
 	@echo "PACKAGE: " @PACKAGE@ 
 	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
 
-daemon: libdap bes modules-configure modules install-data-local
+.PHONY:
+daemon: libdap
+	$(MAKE) daemon1
+
+.PHONY:
+daemon1: bes
+	$(MAKE) daemon2
+
+.PHONY:
+daemon2: modules-configure 
+	$(MAKE) daemon3
+
+.PHONY:
+daemon3: modules 
+	$(MAKE) install-data-local
 
 daemon-check: libdap-check bes-check modules-check bes-configuration-tests
 
@@ -203,9 +227,9 @@ modules-pkg:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
 bes-configuration-tests:
-	besctl start
-	-$(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests
-	besctl stop
+	besctl start \
+		&& $(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests \
+		&& besctl stop
 
 autoreconf:
 	for d in $(SUBDIRS); do (cd $${d} && autoreconf -i -f -v); done

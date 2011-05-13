@@ -177,11 +177,11 @@ bes: debug_msg
 
 .PHONY: bes-check
 bes-check:
-	-($(MAKE) $(MFLAGS) -C src/bes check 2>&1; echo "%%% check status: $$?") | tee -a  make.bes.log
+	-($(MAKE) $(MFLAGS) -j 1 -C src/bes check 2>&1; echo "%%% check status: $$?") | tee -a  make.bes.log
 
 .PHONY: bes-distcheck
 bes-distcheck:
-	-($(MAKE) $(MFLAGS) -C src/bes distcheck 2>&1; echo "%%% distcheck status: $$?") | tee -a make.bes.log
+	-($(MAKE) $(MFLAGS) -j 1 -C src/bes distcheck 2>&1; echo "%%% distcheck status: $$?") | tee -a make.bes.log
 
 .PHONY: bes-rpm
 bes-rpm:
@@ -191,7 +191,7 @@ bes-rpm:
 .PHONY: bes-pkg
 bes-pkg:
 	@echo "Building OS-X Package for BES."
-	-($(MAKE) $(MFLAGS) -C src/bes pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.bes.log
+	-($(MAKE) $(MFLAGS) -j 1 -C src/bes pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.bes.log
 
 # If we don't ignore errors here, a problem with any single configure
 # script on the host will halt all the remaining configure and make operations

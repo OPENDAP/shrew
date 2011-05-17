@@ -9,7 +9,7 @@ SUBDIRS = src/libdap src/bes src/modules
 # These will be passed to all builds if
 # configure gets --enable-debug
 # Modify as needed...
-debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop"
+debug_flags = --enable-developer CXXFLAGS="-pg -g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-pg
 
 olfs_version_arg = -DHYRAX_VERSION=1.7.0RC4 -DOLFS_VERSION=1.8.0
 

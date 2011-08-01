@@ -1,5 +1,5 @@
 ^/branch/libdap/3.11.1 src/libdap
-^/branch/bes/3.9.1 src/bes
+^/branch/bes/3.9.2 src/bes
 ^/branch/olfs/1.8.0 src/olfs
 ^/branch/dap-server/4.1.1 src/modules/dap-server
 ^/branch/freeform_handler/3.8.3 src/modules/freeform_handler

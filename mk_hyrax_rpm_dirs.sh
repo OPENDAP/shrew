@@ -15,7 +15,7 @@ dist=centos5.2
 x32=i386
 x64=x86_64
 
-pub=/var/www/web_site/pub/binary
+pub=/var/www/pub/binary
 # Put the rpms and sig files here before running this script
 tmp=$pub/tmp
 

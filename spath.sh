@@ -40,4 +40,4 @@ fi
 
 # Added because references to CATALINA_HOME will determine which
 # copy of tomcat ./apache-tomcat-*/bin/startup.sh actually starts.
-export CATLINA_HOME=$TOMCAT_DIR
+export CATALINA_HOME=$TOMCAT_DIR

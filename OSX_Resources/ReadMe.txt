@@ -2,7 +2,7 @@
 <dl>
 <STRONG>Install Location</STRONG><br/>
 <small>All selected files in this package will be installed into the file system here:</small><br/>
-<strong><code>&nbsp;&nbsp;&nbsp;&nbsp;/usr/local/opendap/servers/hyrax-1.7</code></strong><br/>
+<strong><code>&nbsp;&nbsp;&nbsp;&nbsp;/usr/local/opendap/servers/hyrax-1.7.0</code></strong><br/>
 <br/>
 
 <STRONG>Configuration (Post Installation)</STRONG><br/>

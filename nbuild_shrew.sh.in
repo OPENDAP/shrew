@@ -7,9 +7,11 @@
 # the os name. Then run the script
 
 USER_PW=""
+# os_name --> "linux-32_hyrax_1.7"
 os_name=""
 make_rpm=""
 make_pkg=""
+slots=1
 
 do_the_build="yes"
 process_the_logs="yes"
@@ -19,9 +21,8 @@ logs_archive="logs"
 
 # First build, then process all of the log files and upload the results
 
-export prefix=`pwd`
-export PATH=$prefix/bin:/usr/local/bin:$PATH
-export CATALINA_HOME=$prefix/apache-tomcat-6.0.29
+export PATH=/usr/local/bin:$PATH
+source spath.sh
 
 # Clean, update and initialize shrew
 if test "$do_the_build" = "yes"
@@ -37,28 +38,28 @@ then
 
     if echo $os_name | grep 'OSX\|osx' && test ! -d deps
     then
-	make universe
+	make universe -j $slots
     else
-	make world
+	make world -j $slots
     fi
 
-    make libdap-check
-    make bes-check
-    make modules-check
+    make libdap-check -j $slots
+    make bes-check -j $slots
+    make modules-check -j $slots
 
-    make libdap-distcheck
-    make bes-distcheck
-    make modules-distcheck
+    make libdap-distcheck -j $slots
+    make bes-distcheck -j $slots
+    make modules-distcheck -j $slots
 
     # Now run the packaging targets
     if test "$make_rpm" = "yes"
     then
-	make rpm
+	make rpm -j $slots
     fi
 
     if test "$make_pkg" = "yes"
     then
-	make pkg
+	make pkg -j $slots
     fi
 
 fi
@@ -97,14 +98,24 @@ do
     echo "_______________________________________________________" >> $make_log
     echo "Build completed at `date`." >> $make_log 2>&1
 
+    # For all these status codes, 0 indicates success, 1 failure and N/A
+    # means not applicable. 
     build_status=`grep '^%%% make status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
     install_status=`grep '^%%% install status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
     check_status=`grep '^%%% check status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
     distcheck_status=`grep '^%%% distcheck status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
 
+    # here we just do minimal sanity checking; if the above code found a 
+    # value, it's assumed to be correct.
+    if test -z "$build_status"; then build_status=1; fi
+    if test -z "$check_status"; then check_status=1; fi
+    if test -z "$install_status"; then install_status=1; fi
+    if test -z "$distcheck_status"; then distcheck_status=1; fi
+      
     if test "$make_rpm" = "yes"
     then
 	rpm_status=`grep '^%%% rpm status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
+        if test -z "$rpm_status"; then rpm_status=1; fi
     else
 	rpm_status="N/A"
     fi
@@ -112,17 +123,11 @@ do
     if test "$make_pkg" = "yes"
     then
 	pkg_status=`grep '^%%% pkg status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
+        if test -z "$pkg_status"; then pkg_status=1; fi
     else
 	pkg_status="N/A"
     fi
 
-    # if test $build_status -eq 0; then build_status=1; fi
-    # if test $check_status -eq 0; then check_status=1; fi
-    # if test $install_status -eq 0; then install_status=1; fi
-    # if test $distcheck_status -eq 0; then distcheck_status=1; fi
-    # if test $rpm_status -eq 0; then rpm_status=1; fi
-    # if test $pkg_status -eq 0; then pkg_status=1; fi
-      
     results="compile: $build_status, check: $check_status, install: $install_status, distcheck: $distcheck_status, rpm: $rpm_status, pkg: $pkg_status"
 
     echo "Results: $results" >> $make_log 2>&1

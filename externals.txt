@@ -11,6 +11,6 @@
 ^/branch/gateway_module/1.0.1 src/modules/gateway_module
 ^/branch/csv_handler/1.0.2 src/modules/csv_handler
 ^/branch/xml_data_handler/1.0.0 src/modules/xml_data_handler
-^/branch/fits_handler/1.0.8 src/modules/fits_handler
+^/branch/fits_handler/1.0.7 src/modules/fits_handler
 ^/branch/hyrax-dependencies/hyrax-1.7-release src/dependencies
 

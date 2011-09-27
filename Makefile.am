@@ -11,7 +11,7 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 debug_flags = --enable-developer CXXFLAGS="-pg -g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-pg
 
-olfs_version_arg = -DHYRAX_VERSION=not.a.release -DOLFS_VERSION=1.8.0
+olfs_version_arg = -DHYRAX_VERSION=not.a.release -DOLFS_VERSION=1.9.0
 
 prefix_arg = --prefix=$(prefix)
 

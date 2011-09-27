@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a c...
 
 AC_PREREQ([2.63])
-AC_INIT([hyrax], [1.7.0])
+AC_INIT([hyrax], [1.8.0])
 AC_CONFIG_AUX_DIR(conf)
 AC_CONFIG_MACRO_DIR([conf])
 

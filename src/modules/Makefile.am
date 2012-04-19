@@ -4,7 +4,7 @@ EXTRA_DIST =
 
 SUBDIRS = dap-server netcdf_handler freeform_handler fileout_netcdf \
 	ncml_module gateway_module csv_handler hdf4_handler hdf5_handler \
-	fits_handler
+	fits_handler xml_data_handler
 
 .PHONY: $(SUBDIRS)
 

@@ -12,6 +12,6 @@ LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
 
-AC_CONFIG_SUBDIRS([dap-server netcdf_handler freeform_handler fileout_netcdf gateway_module csv_handler hdf4_handler hdf5_handler fits_handler ncml_module])
+AC_CONFIG_SUBDIRS([dap-server netcdf_handler freeform_handler fileout_netcdf gateway_module csv_handler hdf4_handler hdf5_handler fits_handler ncml_module xml_data_handler])
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

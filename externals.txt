@@ -12,5 +12,7 @@
 ^/branch/xml_data_handler/1.0.0 src/modules/xml_data_handler
 ^/branch/fits_handler/1.0.7 src/modules/fits_handler
 ^/branch/hyrax-dependencies/hyrax-1.8-release src/dependencies
-^/trunk/hdf5_handler src/modules/hdf5_handler
+^/branch/hdf5_handler/2.1.0 src/modules/hdf5_handler
+^/branch/gdal_handler/hyrax-1.8-release src/modules/gdal_handler
+
 

@@ -28,15 +28,18 @@ hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg = --with-cfits=$(prefix)/deps/cfitsio
+gdal_arg = --enable-local-gdal
 else
 netcdf_arg = 
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.6
 hdf5_arg =
 icu_arg =
 fits_arg = 
+gdal_arg = --enable-local-gdal
 endif
 
-modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg)
+modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) \
+$(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
@@ -93,7 +96,7 @@ showEnv:
 .PHONY: daemon
 daemon: 
 	$(MAKE) libdap 
-	$(MAKE) -j 1 bes
+	$(MAKE) bes
 	$(MAKE) modules-configure 
 	$(MAKE) modules 
 	$(MAKE) install-data-local

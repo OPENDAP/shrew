@@ -5,7 +5,7 @@
 ^/branch/freeform_handler/3.8.4 src/modules/freeform_handler
 ^/branch/fileout_netcdf/1.1.2 src/modules/fileout_netcdf
 ^/branch/netcdf_handler/3.10.0 src/modules/netcdf_handler
-^/branch/hdf4_handler/3.9.4 src/modules/hdf4_handler
+^/branch/hdf4_handler/hyrax-1.8-release src/modules/hdf4_handler
 ^/branch/ncml_module/1.2.1 src/modules/ncml_module
 ^/branch/gateway_module/1.0.1 src/modules/gateway_module
 ^/branch/csv_handler/1.0.2 src/modules/csv_handler

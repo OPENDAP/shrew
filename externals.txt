@@ -1,5 +1,5 @@
 ^/branch/libdap/hyrax-1.8-release src/libdap
-^/branch/bes/3.9.3 src/bes
+^/branch/bes/hyrax-1.8-release src/bes
 ^/branch/olfs/1.9.0 src/olfs
 ^/branch/dap-server/4.1.2 src/modules/dap-server
 ^/branch/freeform_handler/3.8.4 src/modules/freeform_handler

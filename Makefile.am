@@ -172,11 +172,13 @@ libdap-pkg:
 	@echo "Building OS-X Package for libdap."
 	-($(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.libdap.log
 
+# Note that I have to force 'make install' to not use parallel builds or an 
+# error may result. jhrg 10/9/12
 .PHONY: bes
 bes: debug_msg
 	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
-	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
+	($(MAKE) $(MFLAGS) -j1 -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
 .PHONY: bes-check
 bes-check:

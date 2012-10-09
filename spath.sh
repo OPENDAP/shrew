@@ -23,12 +23,17 @@ export PATH=$prefix/bin:$PATH
 export LD_LIBRARY_PATH=$prefix/lib
 
 # Find tomcat - it might not be installed in $prefix yet.
+# If there's more than one tomcat direcotry or more than one tar.gz
+# file, this will fail. jhrg 10/9/12
 unset tc
 export tc=`ls -1 $prefix/src/dependencies/downloads/apache-tomcat-*`
 
-if test -f $prefix/apache-tomcat-6.0.29
+unset tcp
+export tcp=`ls -1d $prefix/apache-tomcat-[0-9]*.[0-9]*.[0-9]*`
+
+if test -d $tcp
 then
-    export TOMCAT_DIR=$prefix/apache-tomcat-6.0.29
+    export TOMCAT_DIR=$tcp
 elif test -f $tc
 then
     tc=${tc##/*/}

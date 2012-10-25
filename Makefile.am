@@ -28,14 +28,14 @@ hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg = --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg = --enable-local-gdal
+gdal_arg = --with-gdal=$(prefix)/deps/gdal-1.9.2
 else
 netcdf_arg = 
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.6
 hdf5_arg =
 icu_arg =
 fits_arg = 
-gdal_arg = --enable-local-gdal
+gdal_arg =
 endif
 
 modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) \

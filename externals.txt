@@ -3,7 +3,7 @@
 ^/branch/olfs/1.9.0 src/olfs
 ^/branch/dap-server/4.1.2 src/modules/dap-server
 ^/branch/freeform_handler/3.8.4 src/modules/freeform_handler
-^/branch/fileout_netcdf/1.1.2 src/modules/fileout_netcdf
+^/branch/fileout_netcdf/hyrax-1.8-release src/modules/fileout_netcdf
 ^/branch/netcdf_handler/3.10.0 src/modules/netcdf_handler
 ^/branch/hdf4_handler/hyrax-1.8-release src/modules/hdf4_handler
 ^/branch/ncml_module/1.2.1 src/modules/ncml_module
@@ -12,7 +12,7 @@
 ^/branch/xml_data_handler/1.0.0 src/modules/xml_data_handler
 ^/branch/fits_handler/1.0.7 src/modules/fits_handler
 ^/branch/hyrax-dependencies/hyrax-1.8-release src/dependencies
-^/branch/hdf5_handler/2.1.0 src/modules/hdf5_handler
+^/branch/hdf5_handler/hyrax-1.8-release src/modules/hdf5_handler
 ^/branch/gdal_handler/hyrax-1.8-release src/modules/gdal_handler
 
 

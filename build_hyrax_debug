@@ -5,4 +5,4 @@ autoreconf -i
 
 ./configure --enable-debug --prefix=$prefix
 
-make world
+make -j9 world

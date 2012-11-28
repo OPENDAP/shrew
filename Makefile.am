@@ -22,7 +22,7 @@ prefix_arg = --prefix=$(prefix)
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
+netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-3.6.3
 # hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
@@ -150,7 +150,7 @@ olfs-osx-package:
 
 .PHONY: libdap
 libdap: debug_msg
-	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+	(cd src/$@ && ./configure --with-gridfields=$(prefix)/deps/gridfields-1.0.0 $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 

@@ -14,5 +14,6 @@
 ^/branch/hyrax-dependencies/hyrax-1.8-release src/dependencies
 ^/branch/hdf5_handler/hyrax-1.8-release src/modules/hdf5_handler
 ^/branch/gdal_handler/hyrax-1.8-release src/modules/gdal_handler
+^/branch/fileout_gdal/hyrax-1.8-release src/modules/fileout_gdal
 
 

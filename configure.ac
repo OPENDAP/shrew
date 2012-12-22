@@ -15,22 +15,22 @@ dnl in the configure invocation since they get lost
 dnl in Makefile.am with explicit calls to bes and libdap
 dnl configure.
 
-AC_ARG_ENABLE([debug],
-[AS_HELP_STRING([--enable-debug],
-[Build a debug (-g3 -O0) version of Hyrax 1.7.0 (default is no)])],
+AC_ARG_ENABLE([developer],
+[AS_HELP_STRING([--enable-developer],
+[Build a developer (-g3 -O0) version of Hyrax 1.7.0 (default is no)])],
 [case "${enableval}" in
-       yes) build_hyrax_debug=true ;;
-       no)  build_hyrax_debug=false ;;
-       *) AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
+       yes) build_hyrax_developer=true ;;
+       no)  build_hyrax_developer=false ;;
+       *) AC_MSG_ERROR([bad value ${enableval} for --enable-developer]) ;;
      esac],
-[build_hyrax_debug=false])
+[build_hyrax_developer=false])
 
-if test "x$build_hyrax_debug" = "xtrue"; then
-   AC_MSG_NOTICE(["Building debug version"])
+if test "x$build_hyrax_developer" = "xtrue"; then
+   AC_MSG_NOTICE(["Building developer version"])
 else
-   AC_MSG_NOTICE(["Not building debug version"])
+   AC_MSG_NOTICE(["Not building developer version"])
 fi
-AM_CONDITIONAL([BUILD_HYRAX_DEBUG], [test "x$build_hyrax_debug" = "xtrue"])
+AM_CONDITIONAL([BUILD_HYRAX_DEVELOPER], [test "x$build_hyrax_developer" = "xtrue"])
 
 AC_ARG_ENABLE([osx],
 [AS_HELP_STRING([--enable-osx],

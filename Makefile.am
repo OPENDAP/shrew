@@ -7,13 +7,16 @@ EXTRA_DIST =
 SUBDIRS = src/libdap src/bes src/modules
 
 # These will be passed to all builds if
-# configure gets --enable-debug
+# configure gets --enable-developer
 # Modify as needed...
-debug_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
+developer_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
 
 olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
 
-prefix_arg = --prefix=$(prefix)
+prefix_arg = --prefix=$(prefix) --disable-option-checking 
+libdap_arg = 
+
+#--with-gdal=$(prefix)/deps/gdal-1.9.2 --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -22,14 +25,12 @@ prefix_arg = --prefix=$(prefix)
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-3.6.3
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg = --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg = --with-gdal=$(prefix)/deps/gdal-1.9.2
-#gdal_arg = 
+gdal_arg = --with-gdal=$(prefix)/deps/
 else
 netcdf_arg = 
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.6
@@ -39,29 +40,26 @@ fits_arg =
 gdal_arg =
 endif
 
-modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) \
-$(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
-release_params = $(prefix_arg) $(modules_arg)
-
-debug_params = $(debug_flags) $(prefix_arg) $(modules_arg)
-
-# Set params depending on whether configure was called with --enable-debug
-if BUILD_HYRAX_DEBUG
-params = $(debug_params)
+# Set params depending on whether configure was called with --enable-developer
+if BUILD_HYRAX_DEVELOPER
+params = $(developer_params) $(prefix_arg) $(modules_arg)
+libdap_params = $(developer_params) $(prefix_arg) $(libdap_arg)
 else
-params = $(release_params)
+params = $(prefix_arg) $(modules_arg)
+libdap_params = $(prefix_arg) $(libdap_arg)
 endif
 
-# Print if we are building debug early in build
+# Print if we are building developer early in build
 .PHONY:
-debug_msg:
-if BUILD_HYRAX_DEBUG
-	@echo "* -------------------------------------*"
-	@echo "* Building debug version of Hyrax...   *"
-	@echo "* -------------------------------------*"
+developer_msg:
+if BUILD_HYRAX_DEVELOPER
+	@echo "* -----------------------------------------*"
+	@echo "* Building developer version of Hyrax...   *"
+	@echo "* -----------------------------------------*"
 endif
 
 # This is really for the OS/X build, but it could be used for linux
@@ -150,8 +148,8 @@ olfs-osx-package:
 	 ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package)
 
 .PHONY: libdap
-libdap: debug_msg
-	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+libdap: developer_msg
+	(cd src/$@ && ./configure $(libdap_params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
@@ -176,7 +174,7 @@ libdap-pkg:
 # Note that I have to force 'make install' to not use parallel builds or an 
 # error may result. jhrg 10/9/12
 .PHONY: bes
-bes: debug_msg
+bes: developer_msg
 	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
 	($(MAKE) $(MFLAGS) -j1 -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
@@ -209,7 +207,7 @@ modules-configure:
 	(cd src/modules && ./configure $(params))
 
 .PHONY: modules
-modules: debug_msg
+modules: developer_msg
 	-$(MAKE) $(MFLAGS) -C src/modules modules
 
 .PHONY: modules-check

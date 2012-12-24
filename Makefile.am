@@ -9,9 +9,10 @@ SUBDIRS = src/libdap src/bes src/modules
 # These will be passed to all builds if
 # configure gets --enable-developer
 # Modify as needed...
-developer_flags = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
+developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
 
-olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
+# olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
+olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
 prefix_arg = --prefix=$(prefix) --disable-option-checking 
 libdap_arg = 
@@ -30,7 +31,7 @@ hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg = --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg = --with-gdal=$(prefix)/deps/
+gdal_arg = --with-gdal=$(prefix)/deps/gdal-12.15.12
 else
 netcdf_arg = 
 hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.6
@@ -46,8 +47,8 @@ modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gda
 # to specify locations of the external libraries as needed.
 # Set params depending on whether configure was called with --enable-developer
 if BUILD_HYRAX_DEVELOPER
-params = $(developer_params) $(prefix_arg) $(modules_arg)
-libdap_params = $(developer_params) $(prefix_arg) $(libdap_arg)
+params = $(developer_arg) $(prefix_arg) $(modules_arg)
+libdap_params = $(developer_arg) $(prefix_arg) $(libdap_arg)
 else
 params = $(prefix_arg) $(modules_arg)
 libdap_params = $(prefix_arg) $(libdap_arg)

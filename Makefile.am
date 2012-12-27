@@ -9,15 +9,19 @@ SUBDIRS = src/libdap src/bes src/modules
 # These will be passed to all builds if
 # configure gets --enable-developer
 # Modify as needed...
+if BUILD_HYRAX_DEVELOPER
 developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
+else
+developer_arg=
+endif
+
+prefix_arg = --prefix=$(prefix) $(developer_arg)
 
 # olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
 olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
-prefix_arg = --prefix=$(prefix) --disable-option-checking 
-libdap_arg = 
-
-#--with-gdal=$(prefix)/deps/gdal-1.9.2 --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+# prefix_arg = --prefix=$(prefix) --disable-option-checking 
+# libdap_arg = 
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -26,33 +30,37 @@ libdap_arg =
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.8
-hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
-icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
-fits_arg = --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg = --with-gdal=$(prefix)/deps/gdal-12.15.12
+libdap_arg = $(prefix_arg)
+#--with-gdal=$(prefix)/deps/gdal-1.9.2 --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+bes_arg = $(prefix_arg)
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
+icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
+fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 else
 netcdf_arg = 
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.6
-hdf5_arg =
-icu_arg =
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.6
+hdf5_arg = 
+icu_arg = 
 fits_arg = 
-gdal_arg =
+gdal_arg = 
 endif
 
-modules_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_arg = $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
 # Users may change add the external lib variables 
 # to specify locations of the external libraries as needed.
 # Set params depending on whether configure was called with --enable-developer
-if BUILD_HYRAX_DEVELOPER
-params = $(developer_arg) $(prefix_arg) $(modules_arg)
-libdap_params = $(developer_arg) $(prefix_arg) $(libdap_arg)
-else
-params = $(prefix_arg) $(modules_arg)
-libdap_params = $(prefix_arg) $(libdap_arg)
-endif
+
+# if BUILD_HYRAX_DEVELOPER
+# params = $(developer_arg) $(prefix_arg) $(modules_arg)
+# libdap_params = $(developer_arg) $(prefix_arg) $(libdap_arg)
+# else
+# params = $(prefix_arg) $(modules_arg)
+# libdap_params = $(prefix_arg) $(libdap_arg)
+# endif
 
 # Print if we are building developer early in build
 .PHONY:
@@ -150,7 +158,7 @@ olfs-osx-package:
 
 .PHONY: libdap
 libdap: developer_msg
-	(cd src/$@ && ./configure $(libdap_params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+	(cd src/$@ && ./configure $(libdap_arg) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
@@ -176,9 +184,9 @@ libdap-pkg:
 # error may result. jhrg 10/9/12
 .PHONY: bes
 bes: developer_msg
-	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+	(cd src/$@ && ./configure $(bes_arg) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
-	($(MAKE) $(MFLAGS) -j1 -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
+	($(MAKE) $(MFLAGS) -j 1 -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
 .PHONY: bes-check
 bes-check:
@@ -205,7 +213,7 @@ bes-pkg:
 # debug.
 .PHONY: modules-configure
 modules-configure:
-	(cd src/modules && ./configure $(params))
+	(cd src/modules && ./configure $(modules_arg))
 
 .PHONY: modules
 modules: developer_msg

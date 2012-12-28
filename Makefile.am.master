@@ -9,6 +9,7 @@ SUBDIRS = src/libdap src/bes src/modules
 # These will be passed to all builds if
 # configure gets --enable-developer
 # Modify as needed...
+
 if BUILD_HYRAX_DEVELOPER
 developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
 else
@@ -19,9 +20,6 @@ prefix_arg = --prefix=$(prefix) $(developer_arg)
 
 # olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
 olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
-
-# prefix_arg = --prefix=$(prefix) --disable-option-checking 
-# libdap_arg = 
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -109,7 +107,7 @@ daemon:
 	$(MAKE) modules 
 	$(MAKE) install-data-local
 
-daemon-check: libdap-check bes-check modules-check bes-configuration-tests
+daemon-check: libdap-check bes-check modules-check bes-server-tests
 
 .PHONY: depends depends-install
 depends:
@@ -235,11 +233,9 @@ modules-rpm:
 modules-pkg:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
-.PHONY: bes-configuration-tests
-bes-configuration-tests:
-	besctl start \
-		&& $(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests \
-		&& besctl stop
+.PHONY: bes-server-tests
+bes-server-tests:
+	$(MAKE) $(MFLAGS) -C src/bes server-tests
 
 .PHONY: autoreconf
 autoreconf:

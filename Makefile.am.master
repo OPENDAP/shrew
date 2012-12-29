@@ -29,7 +29,8 @@ olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
 if BUILD_OSX
 libdap_arg = $(prefix_arg)
-#--with-gdal=$(prefix)/deps/gdal-1.9.2 --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+# --with-gdal=$(prefix)/deps/gdal...
+# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 bes_arg = $(prefix_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
@@ -38,27 +39,19 @@ icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 else
-netcdf_arg = 
-hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.6
-hdf5_arg = 
-icu_arg = 
-fits_arg = 
-gdal_arg = 
+libdap_arg = $(prefix_arg)
+# --with-gdal=$(prefix)/deps/gdal...
+# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+bes_arg = $(prefix_arg)
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
+icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
+fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 endif
 
 modules_arg = $(prefix_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
-
-# Users may change add the external lib variables 
-# to specify locations of the external libraries as needed.
-# Set params depending on whether configure was called with --enable-developer
-
-# if BUILD_HYRAX_DEVELOPER
-# params = $(developer_arg) $(prefix_arg) $(modules_arg)
-# libdap_params = $(developer_arg) $(prefix_arg) $(libdap_arg)
-# else
-# params = $(prefix_arg) $(modules_arg)
-# libdap_params = $(prefix_arg) $(libdap_arg)
-# endif
 
 # Print if we are building developer early in build
 .PHONY:
@@ -68,12 +61,6 @@ if BUILD_HYRAX_DEVELOPER
 	@echo "* Building developer version of Hyrax...   *"
 	@echo "* -----------------------------------------*"
 endif
-
-# This is really for the OS/X build, but it could be used for linux
-# too. See above for the conditional variables passed to/for the deps code
-.PHONY: universe
-universe: depends-install 
-	$(MAKE) world
 
 # Note that for a parallel build (make -j N where N > 1) all of the
 # dependencies are run in parallel, then the actions are rule in series.
@@ -88,16 +75,6 @@ world: autoreconf
 .PHONY: hyrax
 hyrax: check-webapps-privileges daemon
 
-.PHONY: show_env showEnv
-show_env:
-showEnv:
-	@echo "prefix: " $(prefix) 
-	@echo "PATH: " $(PATH)
-	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
-	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
-	@echo "PACKAGE: " @PACKAGE@ 
-	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
-
 # Note that the bes Makefile.am seems broken WRT parallel builds. jhrg 4/27/11
 .PHONY: daemon
 daemon: 
@@ -109,11 +86,10 @@ daemon:
 
 daemon-check: libdap-check bes-check modules-check bes-server-tests
 
-.PHONY: depends depends-install
-depends:
-depends-install:
+.PHONY: dependencies
+dependencies:
 	@echo "Building and installing dependencies."
-	(cd src/dependencies && ./depends-builder install $(prefix) 2>&1; \
+	(cd src/dependencies && make 2>&1; \
 		echo "%%% $@ status: $$?") | tee make.$@.log
 
 .PHONY: depends-pkg
@@ -235,7 +211,7 @@ modules-pkg:
 
 .PHONY: bes-server-tests
 bes-server-tests:
-	$(MAKE) $(MFLAGS) -C src/bes server-tests
+	($(MAKE) $(MFLAGS) -C src/bes server-tests 2>&1; echo "%%% check status: $$?") | tee -a  make.bes.log
 
 .PHONY: autoreconf
 autoreconf:
@@ -308,3 +284,13 @@ check-webapps-privileges:
         then \
 	    echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi
+
+.PHONY: show_env showEnv
+show_env:
+showEnv:
+	@echo "prefix: " $(prefix) 
+	@echo "PATH: " $(PATH)
+	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
+	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
+	@echo "PACKAGE: " @PACKAGE@ 
+	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@

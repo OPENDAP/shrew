@@ -41,7 +41,7 @@ then
 
     make world -j $slots
 
-    make daemon-check 
+    make daemon-check -j $slots
 
     make libdap-distcheck -j $slots
     make bes-distcheck -j $slots
@@ -55,7 +55,7 @@ then
 
     if test "$make_pkg" = "yes"
     then
-	make pkg -j $slots
+	make pkg
     fi
 
 fi

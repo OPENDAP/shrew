@@ -7,18 +7,7 @@
 # Usage: copy the .in file to a plain file, set the build recorder
 # username and password and the os name. Then run the script
 
-USER_PW=""
-# os_name --> "linux-32_hyrax_1.7"
-os_name=""
-make_rpm=""
-make_pkg=""
-slots=9
-
-do_the_build="yes"
-process_the_logs="yes"
-record_build=""
-
-logs_archive="logs"
+source nbuild_info.sh
 
 # First build, then process all of the log files and upload the results
 

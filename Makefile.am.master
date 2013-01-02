@@ -199,6 +199,8 @@ modules: developer_msg
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
+# modules-distcheck barfs when it's passed the developer CXXFLAGS
+
 .PHONY: modules-distcheck
 modules-distcheck:
 	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_distcheck_arg)" -C src/modules modules-distcheck

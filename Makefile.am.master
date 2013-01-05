@@ -31,7 +31,7 @@ if BUILD_OSX
 libdap_arg = $(prefix_arg) $(developer_arg)
 # --with-gdal=$(prefix)/deps/gdal...
 # --with-gridfields=$(prefix)/deps/gridfields-1.0.1
-bes_arg = $(prefix_arg)  $(developer_arg)
+bes_arg = $(prefix_arg) $(developer_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
@@ -39,10 +39,10 @@ icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 else
-libdap_arg = $(prefix_arg)  $(developer_arg)
+libdap_arg = $(prefix_arg)
 # --with-gdal=$(prefix)/deps/gdal...
 # --with-gridfields=$(prefix)/deps/gridfields-1.0.1
-bes_arg = $(prefix_arg)  $(developer_arg)
+bes_arg = $(prefix_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
@@ -51,9 +51,14 @@ fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 endif
 
-modules_arg = $(prefix_arg)  $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
-modules_distcheck_arg = $(prefix_arg)  $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+# Cannot use the --enable-developer stuff with distcheck because the 
+# CXXFLAGS="-O0 ..." confuses configure. jhrg 12/31/12
+# Cannot use --prefix with distcheck because it deletes modules when
+# the tests are done but we need the, e.g., netcdf_handler to stick
+# around for the ncml_module check and distcheck. jhrg 1/4/13
+modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
 # Print if we are building developer early in build
 .PHONY:
@@ -86,7 +91,10 @@ daemon:
 	$(MAKE) modules 
 	$(MAKE) install-data-local
 
-daemon-check: libdap-check bes-check modules-check bes-server-tests
+daemon-check: libdap-check bes-check 
+	$(MAKE) $(MFLAGS) modules-check
+
+#	$(MAKE) $(MFLAGS) bes-server-tests
 
 .PHONY: dependencies
 dependencies:
@@ -199,8 +207,6 @@ modules: developer_msg
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
-# modules-distcheck barfs when it's passed the developer CXXFLAGS
-
 .PHONY: modules-distcheck
 modules-distcheck:
 	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_distcheck_arg)" -C src/modules modules-distcheck
@@ -284,7 +290,8 @@ install-data-local:
 
 .PHONY: check-webapps-privileges
 check-webapps-privileges:
-	@if test -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps"; \
+	@if test -d "$(TOMCAT_DIR)/webapps" \
+            && ! test -w "$(TOMCAT_DIR)/webapps"; \
         then \
 	    echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi

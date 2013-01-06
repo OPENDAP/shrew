@@ -7,12 +7,12 @@
 # Usage: copy the .in file to a plain file, set the build recorder
 # username and password and the os name. Then run the script
 
-source nbuild_info.sh
+source ./nbuild_info.sh
 
 # First build, then process all of the log files and upload the results
 
 export PATH=/usr/local/bin:$PATH
-source spath.sh
+source ./spath.sh
 
 # Clean, update and initialize shrew
 if test "$do_the_build" = "yes"

@@ -92,7 +92,7 @@ daemon:
 	$(MAKE) install-data-local
 
 daemon-check: libdap-check bes-check 
-	$(MAKE) $(MFLAGS) modules-check
+	$(MAKE) $(MFLAGS) -j 1 modules-check
 
 #	$(MAKE) $(MFLAGS) bes-server-tests
 
@@ -207,9 +207,10 @@ modules: developer_msg
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
+# This does not work as a parallel build. Bummer. jhrg 1/8/13
 .PHONY: modules-distcheck
 modules-distcheck:
-	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_distcheck_arg)" -C src/modules modules-distcheck
+	-$(MAKE) $(MFLAGS) -j 1 DISTCHECK_CONFIGURE_FLAGS="$(modules_distcheck_arg)" -C src/modules modules-distcheck
 
 .PHONY: modules-rpm
 modules-rpm:

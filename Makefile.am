@@ -23,8 +23,8 @@ prefix_arg = --prefix=$(prefix)
 
 if BUILD_OSX
 netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2 --enable-cf=yes
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
+hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
+# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
 hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg = --with-cfits=$(prefix)/deps/cfitsio

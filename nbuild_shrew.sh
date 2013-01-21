@@ -2,27 +2,17 @@
 #
 # $Id: nightly_dods_build.sh,v 1.3.2.13 2004/06/14 20:57:23 jimg Exp $
 #
-# Build code checked out from svn using te shrew project
-# Usage: copy the .in file to a plain file, set the build recorder username and password and 
-# the os name. Then run the script
+# Build code checked out from svn using te shrew project 
+#
+# Usage: copy the .in file to a plain file, set the build recorder
+# username and password and the os name. Then run the script
 
-USER_PW=""
-# os_name --> "linux-32_hyrax_1.7"
-os_name=""
-make_rpm=""
-make_pkg=""
-slots=1
-
-do_the_build="yes"
-process_the_logs="yes"
-record_build=""
-
-logs_archive="logs"
+source ./nbuild_info.sh
 
 # First build, then process all of the log files and upload the results
 
 export PATH=/usr/local/bin:$PATH
-source spath.sh
+source ./spath.sh
 
 # Clean, update and initialize shrew
 if test "$do_the_build" = "yes"
@@ -34,18 +24,13 @@ then
     make -k distclean
     svn update --accept theirs-full
     autoreconf --verbose --force --install
-    ./configure --prefix=$prefix
+    ./configure --prefix=$prefix --enable-developer
 
-    if echo $os_name | grep 'OSX\|osx' && test ! -d deps
-    then
-	make universe -j $slots
-    else
-	make world -j $slots
-    fi
+    make dependencies -j $slots
 
-    make libdap-check -j $slots
-    make bes-check -j $slots
-    make modules-check -j $slots
+    make world -j $slots
+
+    make daemon-check -j $slots
 
     make libdap-distcheck -j $slots
     make bes-distcheck -j $slots
@@ -59,7 +44,7 @@ then
 
     if test "$make_pkg" = "yes"
     then
-	make pkg -j $slots
+	make pkg
     fi
 
 fi
@@ -81,7 +66,7 @@ target=all
 
 for build_name in libdap bes dap-server fileout_netcdf freeform_handler \
     hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module \
-    csv_handler
+    csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal
 do
     make_log=${host}.${platform}.${build_name}.${target}.${date}
 

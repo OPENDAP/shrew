@@ -7,13 +7,19 @@ EXTRA_DIST =
 SUBDIRS = src/libdap src/bes src/modules
 
 # These will be passed to all builds if
-# configure gets --enable-debug
+# configure gets --enable-developer
 # Modify as needed...
-debug_flags = --enable-developer CXXFLAGS="-pg -g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-pg
 
-olfs_version_arg = -DHYRAX_VERSION=not.a.release -DOLFS_VERSION=1.8.0
+if BUILD_HYRAX_DEVELOPER
+developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
+else
+developer_arg=
+endif
 
 prefix_arg = --prefix=$(prefix)
+
+# olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
+olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -22,49 +28,46 @@ prefix_arg = --prefix=$(prefix)
 # other parts of the build will fail too.
 
 if BUILD_OSX
-netcdf_arg =--with-netcdf=$(prefix)/deps/netcdf-4.1.2
-hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 --with-hdfeos2=$(prefix)/deps/hdf-eos2
-# hdf4_arg = --with-hdf4=$(prefix)/deps/hdf-4.2.5 
-hdf5_arg = --with-hdf5=$(prefix)/deps/hdf5-1.8.6
-icu_arg = --with-icu-prefix=$(prefix)/deps/icu-3.6
-fits_arg = --with-cfits=$(prefix)/deps/cfitsio
+libdap_arg = $(prefix_arg) $(developer_arg)
+# --with-gdal=$(prefix)/deps/gdal...
+# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+bes_arg = $(prefix_arg) $(developer_arg)
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
+icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
+fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 else
-netcdf_arg = 
-hdf4_arg =
-hdf5_arg =
-icu_arg =
-fits_arg = 
+libdap_arg = $(prefix_arg)
+# --with-gdal=$(prefix)/deps/gdal...
+# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
+bes_arg = $(prefix_arg)
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
+icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
+fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-12.15.12
 endif
 
-modules_arg = --disable-option-checking $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg)
+modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
-# Users may change add the external lib variables 
-# to specify locations of the external libraries as needed.
-release_params = $(prefix_arg) $(modules_arg)
+# Cannot use the --enable-developer stuff with distcheck because the 
+# CXXFLAGS="-O0 ..." confuses configure. jhrg 12/31/12
+# Cannot use --prefix with distcheck because it deletes modules when
+# the tests are done but we need the, e.g., netcdf_handler to stick
+# around for the ncml_module check and distcheck. jhrg 1/4/13
+modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
 
-debug_params = $(debug_flags) $(prefix_arg) $(modules_arg)
-
-# Set params depending on whether configure was called with --enable-debug
-if BUILD_HYRAX_DEBUG
-params = $(debug_params)
-else
-params = $(release_params)
-endif
-
-# Print if we are building debug early in build
+# Print if we are building developer early in build
 .PHONY:
-debug_msg:
-if BUILD_HYRAX_DEBUG
-	@echo "* -------------------------------------*"
-	@echo "* Building debug version of Hyrax...   *"
-	@echo "* -------------------------------------*"
+developer_msg:
+if BUILD_HYRAX_DEVELOPER
+	@echo "* -----------------------------------------*"
+	@echo "* Building developer version of Hyrax...   *"
+	@echo "* -----------------------------------------*"
 endif
-
-# This is really for the OS/X build, but it could be used for linux
-# too. See above for the conditional variables passed to/for the deps code
-.PHONY: universe
-universe: depends-install 
-	$(MAKE) world
 
 # Note that for a parallel build (make -j N where N > 1) all of the
 # dependencies are run in parallel, then the actions are rule in series.
@@ -79,32 +82,24 @@ world: autoreconf
 .PHONY: hyrax
 hyrax: check-webapps-privileges daemon
 
-.PHONY: show_env showEnv
-show_env:
-showEnv:
-	@echo "prefix: " $(prefix) 
-	@echo "PATH: " $(PATH)
-	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
-	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
-	@echo "PACKAGE: " @PACKAGE@ 
-	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@
-
 # Note that the bes Makefile.am seems broken WRT parallel builds. jhrg 4/27/11
 .PHONY: daemon
 daemon: 
 	$(MAKE) libdap 
-	$(MAKE) -j 1 bes
+	$(MAKE) bes
 	$(MAKE) modules-configure 
 	$(MAKE) modules 
 	$(MAKE) install-data-local
 
-daemon-check: libdap-check bes-check modules-check bes-configuration-tests
+daemon-check: libdap-check bes-check 
+	$(MAKE) $(MFLAGS) -j 1 modules-check
 
-.PHONY: depends depends-install
-depends:
-depends-install:
+#	$(MAKE) $(MFLAGS) bes-server-tests
+
+.PHONY: dependencies
+dependencies:
 	@echo "Building and installing dependencies."
-	(cd src/dependencies && ./depends-builder install $(prefix) 2>&1; \
+	(cd src/dependencies && make 2>&1; \
 		echo "%%% $@ status: $$?") | tee make.$@.log
 
 .PHONY: depends-pkg
@@ -146,8 +141,8 @@ olfs-osx-package:
 	 ant $(olfs_version_arg) -DCATALINA_HOME=$(TOMCAT_DIR) osx-package)
 
 .PHONY: libdap
-libdap: debug_msg
-	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+libdap: developer_msg
+	(cd src/$@ && ./configure $(libdap_arg) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
@@ -169,11 +164,13 @@ libdap-pkg:
 	@echo "Building OS-X Package for libdap."
 	-($(MAKE) $(MFLAGS) -C src/libdap pkg 2>&1; echo "%%% pkg status: $$?") | tee -a make.libdap.log
 
+# Note that I have to force 'make install' to not use parallel builds or an 
+# error may result. jhrg 10/9/12
 .PHONY: bes
-bes: debug_msg
-	(cd src/$@ && ./configure $(params) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
+bes: developer_msg
+	(cd src/$@ && ./configure $(bes_arg) 2>&1; echo "%%% configure status: $$?") | tee make.$@.log
 	($(MAKE) $(MFLAGS) -C src/$@ 2>&1; echo "%%% make status: $$?") | tee -a make.$@.log
-	($(MAKE) $(MFLAGS) -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
+	($(MAKE) $(MFLAGS) -j 1 -C src/$@ install 2>&1; echo "%%% install status: $$?") | tee -a make.$@.log
 
 .PHONY: bes-check
 bes-check:
@@ -200,19 +197,20 @@ bes-pkg:
 # debug.
 .PHONY: modules-configure
 modules-configure:
-	(cd src/modules && ./configure $(params))
+	(cd src/modules && ./configure $(modules_arg))
 
 .PHONY: modules
-modules: debug_msg
+modules: developer_msg
 	-$(MAKE) $(MFLAGS) -C src/modules modules
 
 .PHONY: modules-check
 modules-check:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-check
 
+# This does not work as a parallel build. Bummer. jhrg 1/8/13
 .PHONY: modules-distcheck
 modules-distcheck:
-	-$(MAKE) $(MFLAGS) DISTCHECK_CONFIGURE_FLAGS="$(modules_arg)" -C src/modules modules-distcheck
+	-$(MAKE) $(MFLAGS) -j 1 DISTCHECK_CONFIGURE_FLAGS="$(modules_distcheck_arg)" -C src/modules modules-distcheck
 
 .PHONY: modules-rpm
 modules-rpm:
@@ -222,11 +220,9 @@ modules-rpm:
 modules-pkg:
 	-$(MAKE) $(MFLAGS) -C src/modules modules-pkg
 
-.PHONY: bes-configuration-tests
-bes-configuration-tests:
-	besctl start \
-		&& $(MAKE) $(MFLAGS) -C src/bes bes-configuration-tests \
-		&& besctl stop
+.PHONY: bes-server-tests
+bes-server-tests:
+	($(MAKE) $(MFLAGS) -C src/bes server-tests 2>&1; echo "%%% check status: $$?") | tee -a  make.bes.log
 
 .PHONY: autoreconf
 autoreconf:
@@ -247,7 +243,10 @@ PACKAGEMAKER=/Developer/usr/bin/packagemaker
 # make general enough to work in a nightly build. jhrg
 
 .PHONY: pkg
-pkg: libdap-pkg bes-pkg modules-pkg olfs-osx-package
+pkg: depends-pkg libdap-pkg bes-pkg modules-pkg olfs-osx-package collect-pkgs
+
+.PHONY: collect-pkgs
+collect-pkgs:
 	@echo "Removing previous package collection..." 
 	@-rm -rf osx-packages 
 	@-mkdir -p osx-packages 
@@ -292,7 +291,18 @@ install-data-local:
 
 .PHONY: check-webapps-privileges
 check-webapps-privileges:
-	@if test -d "$(TOMCAT_DIR)/webapps" && ! -w "$(TOMCAT_DIR)/webapps"; \
+	@if test -d "$(TOMCAT_DIR)/webapps" \
+            && ! test -w "$(TOMCAT_DIR)/webapps"; \
         then \
 	    echo "WARNING! This operation requires write permission on $(TOMCAT_DIR)/webapps"; \
 	fi
+
+.PHONY: show_env showEnv
+show_env:
+showEnv:
+	@echo "prefix: " $(prefix) 
+	@echo "PATH: " $(PATH)
+	@echo "CATALINA_HOME: " $(CATALINA_HOME) 
+	@echo "TOMCAT_DIR: " $(TOMCAT_DIR)
+	@echo "PACKAGE: " @PACKAGE@ 
+	@echo "PACKAGE_VERSION: " @PACKAGE_VERSION@

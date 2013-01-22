@@ -1,35 +1,22 @@
-<<<<<<< .working
-^/branch/libdap/3.11.1 src/libdap
-^/branch/bes/3.9.2 src/bes
-^/branch/olfs/1.8.0 src/olfs
-^/branch/dap-server/4.1.1 src/modules/dap-server
-^/branch/freeform_handler/3.8.3 src/modules/freeform_handler
-^/branch/fileout_netcdf/1.1.1 src/modules/fileout_netcdf
-^/branch/netcdf_handler/3.9.3 src/modules/netcdf_handler
-^/branch/hdf4_handler/3.9.2 src/modules/hdf4_handler
-^/branch/ncml_module/1.1.1 src/modules/ncml_module
-^/branch/gateway_module/1.0.0 src/modules/gateway_module
-^/branch/csv_handler/1.0.1 src/modules/csv_handler
-^/branch/hyrax-dependencies/hyrax-1.7-release src/dependencies
-=======
-^/branch/libdap/hyrax-1.8-release src/libdap
-^/branch/bes/hyrax-1.8-release src/bes
-^/branch/olfs/hyrax-1.8-release src/olfs
-^/branch/dap-server/hyrax-1.8-release src/modules/dap-server
-^/branch/freeform_handler/hyrax-1.8-release src/modules/freeform_handler
-^/branch/fileout_netcdf/hyrax-1.8-release src/modules/fileout_netcdf
-^/branch/netcdf_handler/hyrax-1.8-release src/modules/netcdf_handler
-^/branch/hdf4_handler/hyrax-1.8-release src/modules/hdf4_handler
-^/branch/ncml_module/hyrax-1.8-release src/modules/ncml_module
-^/branch/gateway_module/hyrax-1.8-release src/modules/gateway_module
-^/branch/csv_handler/hyrax-1.8-release src/modules/csv_handler
-^/branch/xml_data_handler/hyrax-1.8-release src/modules/xml_data_handler
-^/branch/fits_handler/hyrax-1.8-release src/modules/fits_handler
-^/branch/hyrax-dependencies/hyrax-1.8-release src/dependencies
-^/branch/hdf5_handler/hyrax-1.8-release src/modules/hdf5_handler
-^/branch/gdal_handler/hyrax-1.8-release src/modules/gdal_handler
-^/branch/fileout_gdal/hyrax-1.8-release src/modules/fileout_gdal
->>>>>>> .merge-right.r26284
+^/trunk/hyrax-dependencies/ src/dependencies
+^/trunk/libdap/ src/libdap
+^/trunk/bes/ src/bes
+^/trunk/olfs/ src/olfs
+
+^/trunk/dap-server/ src/modules/dap-server
+^/trunk/csv_handler/ src/modules/csv_handler
+^/trunk/freeform_handler/ src/modules/freeform_handler
+^/trunk/netcdf_handler/ src/modules/netcdf_handler
+^/trunk/hdf4_handler/ src/modules/hdf4_handler
 ^/trunk/hdf5_handler/ src/modules/hdf5_handler
+^/trunk/fits_handler/ src/modules/fits_handler
+^/trunk/gdal_handler/ src/modules/gdal_handler
+
+^/trunk/ncml_module/ src/modules/ncml_module
+^/trunk/gateway_module/ src/modules/gateway_module
+
+^/trunk/xml_data_handler/ src/modules/xml_data_handler
+^/trunk/fileout_gdal/ src/modules/fileout_gdal
+^/trunk/fileout_netcdf/ src/modules/fileout_netcdf
 
 

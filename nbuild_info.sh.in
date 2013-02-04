@@ -1,16 +1,45 @@
 
 # Modify this file...
 
+# Set USER_PW To the user name and password for the build recorder system.
+# The nbuild_shrew.sh script will only use these valus if record_build
+# below is set to "yes". All other values and the value of USER_PW is ignored.
 USER_PW=
+
+# os_name is the name prefix used to identify the OS and machine name. In
+# terms of how this script operates, it means nothing, but I suspect that
+# without some value the processing of the log files will barf. I try to
+# combine the OS (linux, osx, ...) along with a machine name (edamame, ...)
+# and whether the build is for a release of Hyrax or the trunk (i.e., shrew).
 # os_name --> "linux-32_hyrax_1.7"
 os_name=
+
+# if make_rm is "yes", then try to build the RPM files using 'make rpm'. 
+# This won't work on OSX...
 make_rpm=""
+
+# if make_pkg is "yes", try to build the OS/X package files using 'make pkg'.
+# Won't work on linux...
 make_pkg=""
+
+# How many processors should the build script assume it has access to?
 slots=1
 
+# do_the_build --> "yes" run the various make targets to build Hyrax/shrew.
+# Setting this to something other than "yes" will ignore the build and 
+# provides a way to just run the log processing part of the script.
 do_the_build="yes"
+
+# Read over the various *.log files the nbuild_shrew.sh script makes.
 process_the_logs="yes"
+
+# Given that the logs have been processed, use the USER_PW information to
+# login to the build recorder database and record just what worked and what
+# did not.
 record_build=""
 
+# The name of the directory in which to store recent log files. This was a
+# more importnat feature when the various build files were not stored by the
+# build system.
 logs_archive="logs"
 

@@ -2,7 +2,7 @@
 # Modify this file...
 
 # Set USER_PW To the user name and password for the build recorder system.
-# The nbuild_shrew.sh script will only use these valus if record_build
+# The nbuild_shrew.sh script will only use these values if record_build
 # below is set to "yes". All other values and the value of USER_PW is ignored.
 USER_PW=
 
@@ -39,7 +39,7 @@ process_the_logs="yes"
 record_build=""
 
 # The name of the directory in which to store recent log files. This was a
-# more importnat feature when the various build files were not stored by the
+# more important feature when the various build files were not stored by the
 # build system.
 logs_archive="logs"
 

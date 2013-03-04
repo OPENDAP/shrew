@@ -22,7 +22,8 @@ export PATH=$prefix/bin:$PATH
 # This is needed for the linux builds; if using the deps libraries
 # on linux, those directories also need to be on LD_LIBRARY_PATH.
 # I'mm not sure this is true... jhrg 1/2/13
-export LD_LIBRARY_PATH=$prefix/lib
+# We do need this for icu-3.6 on AWS EC2 instances. jhrg 3/5/13
+export LD_LIBRARY_PATH=$prefix/lib:$prefix/deps/icu-3.6/lib
 
 # Find tomcat - it might not be installed in $prefix yet.
 # If there's more than one tomcat direcotry or more than one tar.gz

@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+
+if test -z "$prefix"
+then
+	echo "You must first source the file spath.sh  ('source spath.sh')"
+	exit
+fi
+
+autoreconf -fiv
+
+./configure --enable-debug --prefix=$prefix
+
+make -j9 world

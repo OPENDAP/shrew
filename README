@@ -1,10 +1,25 @@
 
-$Id$
-
 Hyrax 'Shrew' Build  Project
+
+-------------------------------------
+
+NOTE: THIS Branch points to the release branches for the hyrax 1.6.2 release
+and should only be used for this purpose!
+
+-------------------------------------
 
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.
+
+* Contents *
+
+  * Start Here *
+  * Organization *
+  * Customizing the Build * Note: OSX Package builders, read this.
+  * Debug Build *
+  * Background *
+  * About the Externally linked projects *
+  * Making a copy of shrew that uses a particular set of revisions  *
 
 * Start Here *
 
@@ -20,9 +35,12 @@ process. Since you're likely a developer, it's wise to set $prefix to
 
 Synopsis:
 
+Simple build:
+
 export prefix=`pwd`
 export PATH=$prefix/bin$PATH
-autoreconf -i
+
+autoreconf -ifv
 ./configure
 make world
 
@@ -30,11 +48,45 @@ The script 'build_hyrax' does this for you. If you source that instead
 of executing it, the modified PATH and the '$prefix' variable will be
 left in you shell.
 
+A more sophisticated build, which makes and installs a server using our
+third party copies of the science data access API libraries and tomcat:
+
+export prefix=`pwd`
+export PATH=$prefix/bin$PATH
+
+autoreconf -ifv
+./configure
+make universe
+
+Also to make OS/X packages: 
+
+make pkg
+
+To make RPMs:
+
+make rpm
+
+To run tests for all the C++ code:
+
+make check
+
+To test the whole server:
+
+1. Edit etc/bes/bes.conf so that BES.Catalog.catalog.RootDirectory points to
+a copy of the 'test dat project' (http://scm.opendap.org/svn/trunk/test-data).
+2. Start Hyrax
+    a. Start the BES (besctl start)
+    b. Start the OLFS (./apache-tomcat-*/bin/startup.sh)
+3 Run the tests (make olfs-check)
+    NB: Five of the 'dejagnu' tests will fail
+
 Note: that once 'make world' is run, it's easy to re-run configure
 using ./config.status or the Makefile targets in the various C++
 source directories. Also, there are a number of other targets that can
 be used to build less than the 'world' target. Other targets besides
-the standard autoconf targets are:
+the standard autoconf targets are (but be suspicious of these and check
+the Makefile.am for ones that are not listed here or differences in behavior
+since these get edited frequently):
 
 world: Run the autoreconf and then grind through the whole build, but
 not the tests.
@@ -47,6 +99,8 @@ libdap: Build libdap
 bes: Build bes
 modules: Build all of the bes modules
 bes-conf: For each module, run the bes-conf target.
+rpm
+pkg
 
 Standard targets that are useful:
 
@@ -59,25 +113,65 @@ install: Runs install in all of the directories.
 
 * Organization *
 
-Hyrax is made up of three 'architectural' pieces, the OLFS, libdap,
-the BES and a collection of modules that are loaded into the BES. The
+Hyrax is made up of three 'architectural' pieces, the OLFS, libdap & BES,
+and a collection of modules that are loaded into the BES. The
 OLFS, libdap and BES are in the 'src' directory and the BES modules
 are in 'src/modules'.
 
+
+* OLFS Install and Local Apache Tomcat Configuration
+
+The configure.ac script will look for an installation of tomcat in the
+local top-level shrew directory.  The tomcat dir searched for in the
+top-level shrew must be named "tomcat" or "apache-tomcat-*" where the
+* reflects the version number in the standard distribution.
+
+If a local tomcat is found it will override the user's CATALINA_HOME
+environment variable to install the OLFS in that location.
+
+If a local copy of tomcat is not found, the user's CATALINA_HOME
+environment variable will be used.
+
+Failing that, the OLFS will not be installed.
+
+To explicitly tell make where to install the olfs (after configure is
+run), you may call with with the env variable to use:
+
+% make CATALINA_HOME="/some/location/for/tomcat" olfs-install
+
+
 * Customizing the Build *
 
-If you look n the Makefile.am, you'll see that build assumes that
-hdf4, 5 and netcdf are located at /usr/local/hdf4, et c., and feeds
-those to the configure scripts in the src/modules directory. If you
-want to have those configure scripts look for the HDF4, ..., packages
-and not use the --with-* option, just set the Makefile variable to
-nothing.
+If you look in the Makefile.am, you'll see that build assumes that
+hdf4, 5 and netcdf are located in standard places _or_ in 'deps' at the
+top level of $shrew. The Makefile.am needs a tiny bit of editing if you're
+going to use the local versions of those. Otherwise it assumes that the
+modules' configure scripts are smart enough to find the correct libraries
+to use. 
+
+If you are building OSX packages it's best to use our versions of the modules'
+dependencies since OSX is quite picky about where libraries are located.
+  
+* Debug Build *
+
+The entire shrew project can be built with debug flags (-g3, -O0, 
+and others) by running the top level configure with --enable-debug
+set:
+
+	./configure --enable-debug
+
+This is highly useful for developers who wish to use shrew as the
+meta-project for a debugging environment such as Eclipse.
+
+We also have provided a separate script to build Hyrax with debug
+flags automatically.  Rather than sourcing build_hyrax, simply source
+build_hyrax_debug instead.
 
 * Background *
 
-How it works: The build first runs autoreconf -i; configure; make and
+How it works: The build first runs autoreconf -ifv; configure; make and
 make install on libdap and then BES. Then it descends into src/modules
-and builds each module, running autoreconf -i; configure; make and
+and builds each module, running autoreconf -ifv; configure; make and
 make install. Because libdap and BES must be built and installed
 first, they are treated specially; the modules are built in any order
 (and the operations are carried out differently then for libdap and
@@ -104,14 +198,14 @@ Then checkout a copy of <destination> using --ignore-externals so that
 you can change the external links the project uses (unless you want to
 use the trunk revisions).
 
-    svn checkout --ignore-revisions <destination> <optional dir name>
+    svn checkout --ignore-externals <destination> <optional dir name>
 
 ... and edit the file externals.txt, and checking the result into svn
 on the branch or tag. If you need to edit the copy on the trunk,
 replace the .txt extension with a date. Then set the value of the
 svn:externals property to that new file.
 
-    svn propset svn:externals --file externals.<date>
+    svn propset svn:externals --file externals.<date> .
 
 But how do you edit the externals file? Using a text editor, change
 the lines like:
@@ -133,7 +227,7 @@ If instead you want to make this instance of shrew on a branch, you
 might want it to grab the newest code of a specific branch of libdap.
 In that case, replace ^/trunk/libdap with the path to the branch:
 
-    ^/branch/libdap/4.0.0 src/libdap
+    ^/branch/libdap/4.0 src/libdap
 
 Note: The script set_externals.sh can be used to take the template
 'externals.txt' file and build a new file where the SVN directories

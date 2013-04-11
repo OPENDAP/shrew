@@ -11,6 +11,7 @@ AM_INIT_AUTOMAKE([-Wall foreign])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
-AC_CONFIG_SUBDIRS([dap-server netcdf_handler hdf4_handler hdf5_handler freeform_handler fileout_netcdf])
+AC_CONFIG_SUBDIRS([dap-server netcdf_handler freeform_handler fileout_netcdf ncml_module gateway_module csv_handler hdf4_handler hdf5_handler fits_handler xml_data_handler gdal_handler fileout_gdal])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

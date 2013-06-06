@@ -12,7 +12,7 @@
 ^/trunk/fits_handler/ src/modules/fits_handler
 ^/trunk/gdal_handler/ src/modules/gdal_handler
 
-^/trunk/ncml_module/ src/modules/ncml_module
+^/branch/ncml_module/dap4 src/modules/ncml_module
 ^/trunk/gateway_module/ src/modules/gateway_module
 
 ^/trunk/xml_data_handler/ src/modules/xml_data_handler

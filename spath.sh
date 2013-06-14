@@ -21,25 +21,16 @@ export PATH=$prefix/bin:$PATH
 
 # This is needed for the linux builds; if using the deps libraries
 # on linux, those directories also need to be on LD_LIBRARY_PATH.
-# I'mm not sure this is true... jhrg 1/2/13
+# I'm not sure this is true... jhrg 1/2/13
 # We do need this for icu-3.6 on AWS EC2 instances. jhrg 3/5/13
 export LD_LIBRARY_PATH=$prefix/lib:$prefix/deps/icu-3.6/lib
 
-# Find tomcat - it might not be installed in $prefix yet.
-# If there's more than one tomcat direcotry or more than one tar.gz
-# file, this will fail. jhrg 10/9/12
-unset tc
-export tc=`ls -1 $prefix/src/dependencies/downloads/apache-tomcat-*`
-
-unset tcp
-# export tcp=`ls -1d $prefix/apache-tomcat-[0-9]*.[0-9]*.[0-9]*`
-export tcp=`ls -1 -d $prefix/apache-tomcat-* | grep 'apache-tomcat-[0-9]*\.[0-9]*\.[0-9]*$'`
-
-if test -d $tcp
-then
-    export TOMCAT_DIR=$tcp
-    export CATALINA_HOME=$TOMCAT_DIR
-elif test -f $tc
+# This somewhat hokey test for tomcat is less likely to fail than 
+# the previous hacks... jhrg 6/13/13
+# Assume we're part of shrew and that tomcat will be (or has been) 
+# installed from the dependencies directory.
+tc=`ls -1 $prefix/src/dependencies/downloads/apache-tomcat-*`
+if test -n "$tc"
 then
     tc=${tc##/*/}
     tc=${tc%.tar.gz}

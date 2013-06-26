@@ -1,6 +1,6 @@
 ^/trunk/hyrax-dependencies/ src/dependencies
-^/trunk/libdap/ src/libdap
-^/trunk/bes/ src/bes
+^/branch/libdap/miic_6.2013 src/libdap
+^/branch/bes/miic_6.2013 src/bes
 ^/trunk/olfs/ src/olfs
 
 ^/trunk/dap-server/ src/modules/dap-server

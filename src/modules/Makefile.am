@@ -7,9 +7,13 @@ EXTRA_DIST =
 # 12/31/12 
 
 FORMAT_READERS = netcdf_handler freeform_handler csv_handler \
-	hdf4_handler hdf5_handler fits_handler gdal_handler
+	hdf4_handler hdf5_handler fits_handler
 
-RESPONSE_BUILDERS = dap-server xml_data_handler fileout_netcdf fileout_gdal
+# gdal_handler
+
+RESPONSE_BUILDERS = dap-server xml_data_handler fileout_netcdf
+
+# fileout_gdal
 
 PROCESSORS = ncml_module gateway_module 
 

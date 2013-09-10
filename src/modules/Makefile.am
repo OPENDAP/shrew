@@ -54,7 +54,16 @@ modules-rpm: $(SUBDIRS_RPM)
 
 # Note that abs_top_builddir is set to $prefix/src/modules so we set _topdir 
 # to two levels up to get the rpms all deposited in the same place.
+#
+# Special case fileout_gdal because centos 6 doen't have a RPM for 1.10.0,
+# Which this module needs. I want to make sure there are no other issues
+# with the rpm build because it should work for machines with a custom
+# rpm install.
 %-rpm: 
+	if test -z "`echo $$old_path`"; then \
+		export old_path=`echo $$PATH`; \
+		export PATH=$$prefix/deps/gdal-1.10.0/bin:$$PATH; \
+	fi; \
 	export RPM_OPTIONS="--nodeps --define \"_topdir $(abs_top_builddir)/../../rpm\"";\
 	($(MAKE) -C $* rpm 2>&1; echo "%%% rpm status: $$?") \
 	    | tee -a  make.$*.log

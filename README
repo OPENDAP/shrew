@@ -3,11 +3,6 @@ Hyrax 'Shrew' Build  Project
 
 -------------------------------------
 
-NOTE: THIS Branch points to the release branches for the hyrax 1.6.2 release
-and should only be used for this purpose!
-
--------------------------------------
-
 In the following, $shrew is the full pathname of the 'main' directory
 - the directory that contains this README file.
 
@@ -23,57 +18,55 @@ In the following, $shrew is the full pathname of the 'main' directory
 
 * Start Here *
 
-The main directory contains configure.ac and Makefile.am (along with
-this README and the build_hyrax script) files which are processed
-using autoreconf -i to build configure and Makefile.in files
-(respectively). Once those are built, run configure to build a
-Makefile and then use the 'world' target of the Makefile to build the
-server. You should also set PATH so that it searches '$shrew/bin' first
-so that the newly-built libdap and BES will be found during the build
-process. Since you're likely a developer, it's wise to set $prefix to
-'$shrew' as well. 
+The main directory contains configure.ac and Makefile.am files (along
+with this README) and is the root directory for a complete build of
+the Hyrax data server. 
+
+The Shrew project is set up for use by developers and others to build
+the entire Hyrax server from source. Most of the server's modules rely
+on other software to read, write or process data and that list of
+dependencies has grown long. We provide them in a special sub-project
+called 'dependencies'. The default build options expect that you will
+want to use these. In the section named Customizing the Build we
+explain how to use other versions of those packages.
 
 Synopsis:
 
-Simple build:
+Copy Makefile.am.master to Makefile.am and give it a give look. The
+Makefile.am has options for an OSX and Linux builds and likely will
+need no editing.
 
-export prefix=`pwd`
-export PATH=$prefix/bin$PATH
+To build the server, run the follwong commands.
 
-autoreconf -ifv
-./configure
-make world
+    source spath.sh
+    autoreconf --install --force --verbose
 
-The script 'build_hyrax' does this for you. If you source that instead
-of executing it, the modified PATH and the '$prefix' variable will be
-left in you shell.
+Then, run
 
-A more sophisticated build, which makes and installs a server using our
-third party copies of the science data access API libraries and tomcat:
+    ./configure --prefix=$prefix
+    make universe
 
-export prefix=`pwd`
-export PATH=$prefix/bin$PATH
+If your computer has netCDF 4, HDF5, or other libraries that Hyrax
+uses, you can edit the Makefile.am to use those libraries, etc. (or
+simply omit the --with-netcdf= options from the Makefile.am variables
+to allow the configure scripts to find them using the normal rules)
+and run 'make world'.
 
-autoreconf -ifv
-./configure
-make universe
+If you need to build Hyrax more than once, use 'make world' for the
+subsequent builds and 'rm -rf deps' followed by 'make dependencies' to
+force a rebuild of the dependencies.
 
-Also to make OS/X packages: 
+If you want to develop server code, use the --enable-developer option
+for the configre script.
 
-make pkg
+To test the server, run
 
-To make RPMs:
-
-make rpm
-
-To run tests for all the C++ code:
-
-make check
+   make check
 
 To test the whole server:
 
 1. Edit etc/bes/bes.conf so that BES.Catalog.catalog.RootDirectory points to
-a copy of the 'test dat project' (http://scm.opendap.org/svn/trunk/test-data).
+a copy of the 'test data project' (http://scm.opendap.org/svn/trunk/test-data).
 2. Start Hyrax
     a. Start the BES (besctl start)
     b. Start the OLFS (./apache-tomcat-*/bin/startup.sh)

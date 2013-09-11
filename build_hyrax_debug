@@ -7,8 +7,8 @@ then
 	exit
 fi
 
-autoreconf -fiv
+autoreconf --force --install --verbose
 
 ./configure --enable-debug --prefix=$prefix
 
-make -j9 world
+make -j7 world

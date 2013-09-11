@@ -1,22 +1,22 @@
-^/branch/hyrax_1.9_release/hyrax-dependencies/ src/dependencies
-^/branch/hyrax_1.9_release/libdap/ src/libdap
-^/branch/hyrax_1.9_release/bes/ src/bes
+^/branch/hyrax-dependencies/hyrax_1.9_release/ src/dependencies
+^/branch/libdap/hyrax_1.9_release/ src/libdap
+^/branch/bes/hyrax_1.9_release/ src/bes
 ^/trunk/olfs/ src/olfs
 
-^/branch/hyrax_1.9_release/dap-server/ src/modules/dap-server
-^/branch/hyrax_1.9_release/csv_handler/ src/modules/csv_handler
-^/branch/hyrax_1.9_release/freeform_handler/ src/modules/freeform_handler
-^/branch/hyrax_1.9_release/netcdf_handler/ src/modules/netcdf_handler
-^/branch/hyrax_1.9_release/hdf4_handler/ src/modules/hdf4_handler
-^/branch/hyrax_1.9_release/hdf5_handler/ src/modules/hdf5_handler
-^/branch/hyrax_1.9_release/fits_handler/ src/modules/fits_handler
-^/branch/hyrax_1.9_release/gdal_handler/ src/modules/gdal_handler
+^/branch/dap-server/hyrax_1.9_release/ src/modules/dap-server
+^/branch/csv_handler/hyrax_1.9_release/ src/modules/csv_handler
+^/branch/freeform_handler/hyrax_1.9_release/ src/modules/freeform_handler
+^/branch/netcdf_handler/hyrax_1.9_release/ src/modules/netcdf_handler
+^/branch/hdf4_handler/hyrax_1.9_release/ src/modules/hdf4_handler
+^/branch/hdf5_handler/hyrax_1.9_release/ src/modules/hdf5_handler
+^/branch/fits_handler/hyrax_1.9_release/ src/modules/fits_handler
+^/branch/gdal_handler/hyrax_1.9_release/ src/modules/gdal_handler
 
-^/branch/hyrax_1.9_release/ncml_module/ src/modules/ncml_module
-^/branch/hyrax_1.9_release/gateway_module/ src/modules/gateway_module
+^/branch/ncml_module/hyrax_1.9_release/ src/modules/ncml_module
+^/branch/gateway_module/hyrax_1.9_release/ src/modules/gateway_module
 
-^/branch/hyrax_1.9_release/xml_data_handler/ src/modules/xml_data_handler
-^/branch/hyrax_1.9_release/fileout_gdal/ src/modules/fileout_gdal
-^/branch/hyrax_1.9_release/fileout_netcdf/ src/modules/fileout_netcdf
+^/branch/xml_data_handler/hyrax_1.9_release/ src/modules/xml_data_handler
+^/branch/fileout_gdal/hyrax_1.9_release/ src/modules/fileout_gdal
+^/branch/fileout_netcdf/hyrax_1.9_release/ src/modules/fileout_netcdf
 
 

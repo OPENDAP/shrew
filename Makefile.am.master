@@ -18,8 +18,7 @@ endif
 
 prefix_arg = --prefix=$(prefix)
 
-# olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
-olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
+# olfs_version_arg = -DHYRAX_VERSION= -DOLFS_VERSION=
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -29,8 +28,6 @@ olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
 if BUILD_OSX
 libdap_arg = $(prefix_arg) $(developer_arg)
-# --with-gdal=$(prefix)/deps/gdal...
-# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 bes_arg = $(prefix_arg) $(developer_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
@@ -40,8 +37,6 @@ fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
 else
 libdap_arg = $(prefix_arg)
-# --with-gdal=$(prefix)/deps/gdal...
-# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 bes_arg = $(prefix_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
@@ -74,6 +69,10 @@ endif
 # Thus for the hyrax target, each of check-web..., daemon and olfs are
 # run at the same time while doe daemon, libdap, bes, ..., are all built one
 # after the other.
+
+.PHONY: universe
+universe: dependencies
+	$(MAKE) world
 
 .PHONY: world
 world: autoreconf 

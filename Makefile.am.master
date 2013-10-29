@@ -35,6 +35,7 @@ hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
+ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 else
 libdap_arg = $(prefix_arg)
 bes_arg = $(prefix_arg)
@@ -44,16 +45,17 @@ hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
+ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 endif
 
-modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg) $(ugrid_arg)
 
 # Cannot use the --enable-developer stuff with distcheck because the 
 # CXXFLAGS="-O0 ..." confuses configure. jhrg 12/31/12
 # Cannot use --prefix with distcheck because it deletes modules when
 # the tests are done but we need the, e.g., netcdf_handler to stick
 # around for the ncml_module check and distcheck. jhrg 1/4/13
-modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg) $(ugrid_arg)
 
 # Print if we are building developer early in build
 .PHONY:

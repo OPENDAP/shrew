@@ -9,6 +9,6 @@ fi
 
 autoreconf --force --install --verbose
 
-./configure --enable-debug --prefix=$prefix
+./configure --enable-debug --enable-developer --prefix=$prefix
 
 make -j7 world

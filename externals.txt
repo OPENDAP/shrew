@@ -19,4 +19,6 @@
 ^/trunk/fileout_gdal/ src/modules/fileout_gdal
 ^/trunk/fileout_netcdf/ src/modules/fileout_netcdf
 
+^/trunk/ugrid_functions/ src/modules/ugrid_functions
+
 

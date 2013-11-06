@@ -1,6 +1,6 @@
 ^/trunk/hyrax-dependencies/ src/dependencies
 ^/branch/libdap/dap4 src/libdap
-^/trunk/bes/ src/bes
+^/branch/bes/dap4 src/bes
 ^/trunk/olfs/ src/olfs
 
 ^/trunk/dap-server/ src/modules/dap-server

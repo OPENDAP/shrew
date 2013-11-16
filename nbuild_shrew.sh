@@ -47,6 +47,7 @@ then
 	make pkg
     fi
 
+    make olfs
 fi
 
 if test "$process_the_logs" = "yes"
@@ -66,14 +67,16 @@ target=all
 
 for build_name in libdap bes dap-server fileout_netcdf freeform_handler \
     hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module \
-    csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal
+    csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal \
+    ugrid_functions olfs
 do
     make_log=${host}.${platform}.${build_name}.${target}.${date}
 
     echo "Build of ${build_name} using target ${target} on `date`" > $make_log
     echo "Built on ${host_full}, ${platform} (`uname -a`)" >> $make_log
 
-    if test "$build_name" = "libdap" -o "$build_name" = "bes"
+    if test "$build_name" = "libdap" -o "$build_name" = "bes" \
+	-o "$build_name" = "olfs"
     then
 	cat make.$build_name.log >> $make_log
     else
@@ -95,7 +98,11 @@ do
     if test -z "$build_status"; then build_status=1; fi
     if test -z "$check_status"; then check_status=1; fi
     if test -z "$install_status"; then install_status=1; fi
-    if test -z "$distcheck_status"; then distcheck_status=1; fi
+
+    # I made this N/A if it's zero length because the olfs-check
+    # target is not going to set it. N/A won't make the NB summary
+    # line red.
+    if test -z "$distcheck_status"; then distcheck_status="N/A"; fi
       
     if test "$make_rpm" = "yes"
     then

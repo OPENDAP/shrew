@@ -19,6 +19,7 @@ endif
 prefix_arg = --prefix=$(prefix)
 
 # olfs_version_arg = -DHYRAX_VERSION= -DOLFS_VERSION=
+olfs_version_arg = -DHYRAX_VERSION=nightly_build
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -34,11 +35,11 @@ hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1-10.0
 ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 else
-libdap_arg = $(prefix_arg)
-bes_arg = $(prefix_arg)
+libdap_arg = $(prefix_arg) $(developer_arg)
+bes_arg = $(prefix_arg) $(developer_arg)
 netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
 hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
@@ -110,30 +111,40 @@ depends-pkg:
 		echo "%%% mkPackage status: $$?" ) | tee make.$@.log
 
 .PHONY: olfs
-olfs: olfs-install
+olfs: olfs-check
 
 .PHONY: olfs-compile
 olfs-compile:
-	(cd src/olfs && ant $(olfs_version_arg) )
+	(cd src/olfs && ant $(olfs_version_arg); \
+         echo "%%% make status: $$?") 2>&1 | tee make.olfs.log
 
 .PHONY: olfs-install
 olfs-install: check-webapps-privileges olfs-compile
-	@if test ! -d "$(TOMCAT_DIR)/webapps"; then \
-		echo "ERROR: $(TOMCAT_DIR)/webapps is missing."; \
+	@if test -d "$(TOMCAT_DIR)/webapps"; then \
+		(echo "OLFS installing to: $(TOMCAT_DIR)/webapps"; \
+		 cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps 2>&1 ; \
+		 echo "%%% install status: $$?") | tee -a make.olfs.log; \
 	else \
-		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
-		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
+		(echo "ERROR: $(TOMCAT_DIR)/webapps is missing."; \
+		 echo "%%% install status: 1") | tee -a make.olfs.log; \
 	fi
 
 .PHONY: olfs-check
-olfs-check:
-	@echo "Checking for Hyrax Service..."
-	@-curl http://localhost:8080/opendap/version;\
-	if test "$$?" -ne "0"; then \
-		echo "ERROR! Hyrax must be running at http://localhost:8080/opendap/ for these tests to work."; \
+olfs-check: start-hyrax
+	(echo "Running OLFS Tests."; \
+         cd src/olfs && ./make-check) 2>&1; \
+         echo "%%% check status: $$?" | tee -a make.olfs.log;
+
+.PHONY: start-hyrax
+start-hyrax: olfs-install
+	-$(prefix)/bin/besctl stop
+	-$(TOMCAT_DIR)/bin/shutdown.sh
+	$(prefix)/bin/besctl start
+	$(TOMCAT_DIR)/bin/startup.sh
+	-if test "x$$?" != "x0"; then \
+	    echo "FAIL: Could not start Hyrax" | tee -a make.olfs.log; \
 	else \
-		echo "Running OLFS Tests."; \
-		(cd src/olfs && ./make-check); \
+	    echo "Started Hyrax" | tee -a make.olfs.log; \
 	fi
 
 .PHONY: olfs-osx-package

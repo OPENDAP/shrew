@@ -104,7 +104,7 @@ do
     # line red.
     if test -z "$distcheck_status"; then distcheck_status="N/A"; fi
       
-    if test "$make_rpm" = "yes"
+    if test "$make_rpm" = "yes" -a "$build_name" != "olfs"
     then
 	rpm_status=`grep '^%%% rpm status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
         if test -z "$rpm_status"; then rpm_status=1; fi
@@ -112,7 +112,7 @@ do
 	rpm_status="N/A"
     fi
 
-    if test "$make_pkg" = "yes"
+    if test "$make_pkg" = "yes" -a "$build_name" != "olfs"
     then
 	pkg_status=`grep '^%%% pkg status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
         if test -z "$pkg_status"; then pkg_status=1; fi

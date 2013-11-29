@@ -6,12 +6,18 @@ EXTRA_DIST =
 # response-builder modules often depend on the format readers. jhrg
 # 12/31/12 
 
-FORMAT_READERS = netcdf_handler freeform_handler csv_handler \
-	hdf4_handler hdf5_handler fits_handler gdal_handler
+FORMAT_READERS = netcdf_handler 
 
-RESPONSE_BUILDERS = dap-server xml_data_handler fileout_netcdf fileout_gdal
+# freeform_handler csv_handler
+# hdf4_handler hdf5_handler fits_handler gdal_handler
 
-PROCESSORS = ncml_module gateway_module 
+RESPONSE_BUILDERS = dap-server
+
+# xml_data_handler fileout_netcdf fileout_gdal
+
+PROCESSORS = 
+
+# ncml_module gateway_module
 
 SUBDIRS =  $(FORMAT_READERS) $(RESPONSE_BUILDERS) $(PROCESSORS)
 

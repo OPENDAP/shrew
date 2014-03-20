@@ -1,7 +1,7 @@
 ^/branch/hyrax-dependencies/hyrax_1.9_release/ src/dependencies
 ^/branch/libdap/hyrax_1.9_release/ src/libdap
 ^/branch/bes/hyrax_1.9_release/ src/bes
-^/trunk/olfs/ src/olfs
+^/branch/olfs/1.10 src/olfs
 
 ^/branch/dap-server/hyrax_1.9_release/ src/modules/dap-server
 ^/branch/csv_handler/hyrax_1.9_release/ src/modules/csv_handler

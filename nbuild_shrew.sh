@@ -32,19 +32,22 @@ then
 
     make daemon-check -j $slots
 
-    make libdap-distcheck -j $slots
-    make bes-distcheck -j $slots
-    make modules-distcheck -j $slots
+    if test "$make_distcheck" = "yes"
+    then
+        make libdap-distcheck -j $slots
+        make bes-distcheck -j $slots
+        make modules-distcheck -j $slots
+    fi
 
     # Now run the packaging targets
     if test "$make_rpm" = "yes"
     then
-	make rpm -j $slots
+	   make rpm -j $slots
     fi
 
     if test "$make_pkg" = "yes"
     then
-	make pkg
+	   make pkg
     fi
 
     make olfs

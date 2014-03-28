@@ -15,11 +15,11 @@ export PATH=/usr/local/bin:$PATH
 source ./spath.sh
 
 # Clean, update and initialize shrew
-if test "$do_the_build" = "yes"
+if test "x$do_the_build" = "xyes"
 then
-    rm make.*.log
-    rm src/modules/make.*.log
-    rm -rf bin etc include lib share var
+    rm make.*.log 2> /dev/null
+    rm src/modules/make.*.log 2> /dev/null
+    rm -rf bin etc include lib share var 2> /dev/null
 
     make -k distclean
     svn update --accept theirs-full

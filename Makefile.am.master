@@ -132,8 +132,8 @@ olfs-install: check-webapps-privileges olfs-compile
 .PHONY: olfs-check
 olfs-check: start-hyrax
 	(echo "Running OLFS Tests."; \
-         cd src/olfs && ./make-check) 2>&1; \
-         echo "%%% check status: $$?" | tee -a make.olfs.log;
+         cd src/olfs && ./make-check 2>&1; \
+         echo "%%% check status: $$?") | tee -a make.olfs.log;
 
 .PHONY: start-hyrax
 start-hyrax: olfs-install

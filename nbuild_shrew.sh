@@ -68,10 +68,10 @@ date=`date +%Y.%m.%d`
 platform=`conf/config.guess`
 target=all
 
-for build_name in libdap bes dap-server fileout_netcdf freeform_handler \
+for build_name in libdap bes olfs dap-server fileout_netcdf freeform_handler \
     hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module \
     csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal \
-    ugrid_functions olfs
+    ugrid_functions
 do
     make_log=${host}.${platform}.${build_name}.${target}.${date}
 

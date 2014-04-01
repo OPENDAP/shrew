@@ -134,10 +134,16 @@ olfs-check: start-hyrax
 	(echo "Running OLFS Tests."; \
          cd src/olfs && ./make-check 2>&1; \
          echo "%%% check status: $$?") | tee -a make.olfs.log;
+	-$(prefix)/bin/besctl stop
+	-$(TOMCAT_DIR)/bin/shutdown.sh
 
+# I switched to 'besctl kill' from ... stop because on some hosts
+# there were other instances of the bes kicking around that did not
+# get stopped and not starting the bes is a problem for these tests
+# which test the server end-to-end using curl as the client. jhrg 4/1/14
 .PHONY: start-hyrax
 start-hyrax: olfs-install
-	-$(prefix)/bin/besctl stop
+	-$(prefix)/bin/besctl kill
 	-$(TOMCAT_DIR)/bin/shutdown.sh
 	$(prefix)/bin/besctl start
 	$(TOMCAT_DIR)/bin/startup.sh

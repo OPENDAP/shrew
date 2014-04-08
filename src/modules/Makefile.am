@@ -11,9 +11,9 @@ FORMAT_READERS = netcdf_handler freeform_handler csv_handler \
 
 RESPONSE_BUILDERS = dap-server xml_data_handler fileout_netcdf fileout_gdal
 
-PROCESSORS = ncml_module gateway_module 
+PROCESSORS = ncml_module gateway_module ugrid_functions
 
-# Removed from 'PROCESSORS'; ugrid_functions
+# Removed from 'PROCESSORS'; 
 
 SUBDIRS =  $(FORMAT_READERS) $(RESPONSE_BUILDERS) $(PROCESSORS)
 

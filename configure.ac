@@ -17,7 +17,7 @@ dnl configure.
 
 AC_ARG_ENABLE([developer],
 [AS_HELP_STRING([--enable-developer],
-[Build a developer (-g3 -O0) version of Hyrax 1.7.0 (default is no)])],
+[Build a developer (-g3 -O0) version of Hyrax (default is no)])],
 [case "${enableval}" in
        yes) build_hyrax_developer=true ;;
        no)  build_hyrax_developer=false ;;

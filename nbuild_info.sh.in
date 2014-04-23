@@ -14,13 +14,16 @@ USER_PW=
 # os_name --> "linux-32_hyrax_1.7"
 os_name=
 
+# This will make for a much faster build if it's set to "no"
+make_distcheck="no"
+
 # if make_rm is "yes", then try to build the RPM files using 'make rpm'. 
 # This won't work on OSX...
-make_rpm=""
+make_rpm="no"
 
 # if make_pkg is "yes", try to build the OS/X package files using 'make pkg'.
 # Won't work on linux...
-make_pkg=""
+make_pkg="no"
 
 # How many processors should the build script assume it has access to?
 slots=1
@@ -36,7 +39,7 @@ process_the_logs="yes"
 # Given that the logs have been processed, use the USER_PW information to
 # login to the build recorder database and record just what worked and what
 # did not.
-record_build=""
+record_build="no"
 
 # The name of the directory in which to store recent log files. This was a
 # more important feature when the various build files were not stored by the

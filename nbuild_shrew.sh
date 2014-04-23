@@ -15,11 +15,11 @@ export PATH=/usr/local/bin:$PATH
 source ./spath.sh
 
 # Clean, update and initialize shrew
-if test "$do_the_build" = "yes"
+if test "x$do_the_build" = "xyes"
 then
-    rm make.*.log
-    rm src/modules/make.*.log
-    rm -rf bin etc include lib share var
+    rm make.*.log 2> /dev/null
+    rm src/modules/make.*.log 2> /dev/null
+    rm -rf bin etc include lib share var 2> /dev/null
 
     make -k distclean
     svn update --accept theirs-full
@@ -32,21 +32,29 @@ then
 
     make daemon-check -j $slots
 
-    make libdap-distcheck -j $slots
-    make bes-distcheck -j $slots
-    make modules-distcheck -j $slots
+    if test "$make_distcheck" = "yes"
+    then
+        make libdap-distcheck -j $slots
+        make bes-distcheck -j $slots
+        make modules-distcheck -j $slots
+    fi
 
     # Now run the packaging targets
     if test "$make_rpm" = "yes"
     then
-	make rpm -j $slots
+	   make rpm -j $slots
     fi
 
     if test "$make_pkg" = "yes"
     then
-	make pkg
+	   make pkg
     fi
 
+    # This will build and install the OLFS and then start the server
+    # and run the tests - olfs unit tests and then the server end-to
+    # end regression tests. It stops the server when the tests are 
+    # done. 
+    make olfs
 fi
 
 if test "$process_the_logs" = "yes"
@@ -64,16 +72,18 @@ date=`date +%Y.%m.%d`
 platform=`conf/config.guess`
 target=all
 
-for build_name in libdap bes dap-server fileout_netcdf freeform_handler \
+for build_name in libdap bes olfs dap-server fileout_netcdf freeform_handler \
     hdf4_handler hdf5_handler ncml_module netcdf_handler gateway_module \
-    csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal
+    csv_handler fits_handler xml_data_handler gdal_handler fileout_gdal \
+    ugrid_functions
 do
     make_log=${host}.${platform}.${build_name}.${target}.${date}
 
     echo "Build of ${build_name} using target ${target} on `date`" > $make_log
     echo "Built on ${host_full}, ${platform} (`uname -a`)" >> $make_log
 
-    if test "$build_name" = "libdap" -o "$build_name" = "bes"
+    if test "$build_name" = "libdap" -o "$build_name" = "bes" \
+	-o "$build_name" = "olfs"
     then
 	cat make.$build_name.log >> $make_log
     else
@@ -95,9 +105,13 @@ do
     if test -z "$build_status"; then build_status=1; fi
     if test -z "$check_status"; then check_status=1; fi
     if test -z "$install_status"; then install_status=1; fi
-    if test -z "$distcheck_status"; then distcheck_status=1; fi
+
+    # I made this N/A if it's zero length because the olfs-check
+    # target is not going to set it. N/A won't make the NB summary
+    # line red.
+    if test -z "$distcheck_status"; then distcheck_status="N/A"; fi
       
-    if test "$make_rpm" = "yes"
+    if test "$make_rpm" = "yes" -a "$build_name" != "olfs"
     then
 	rpm_status=`grep '^%%% rpm status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
         if test -z "$rpm_status"; then rpm_status=1; fi
@@ -105,7 +119,7 @@ do
 	rpm_status="N/A"
     fi
 
-    if test "$make_pkg" = "yes"
+    if test "$make_pkg" = "yes" -a "$build_name" != "olfs"
     then
 	pkg_status=`grep '^%%% pkg status: [0-9]*$' $make_log | sed 's@.*: \([0-9]*\)@\1@'`
         if test -z "$pkg_status"; then pkg_status=1; fi

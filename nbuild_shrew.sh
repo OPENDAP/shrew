@@ -50,6 +50,10 @@ then
 	   make pkg
     fi
 
+    # This will build and install the OLFS and then start the server
+    # and run the tests - olfs unit tests and then the server end-to
+    # end regression tests. It stops the server when the tests are 
+    # done. 
     make olfs
 fi
 

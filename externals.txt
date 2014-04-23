@@ -18,5 +18,6 @@
 ^/branch/xml_data_handler/hyrax_1.9_release/ src/modules/xml_data_handler
 ^/branch/fileout_gdal/hyrax_1.9_release/ src/modules/fileout_gdal
 ^/branch/fileout_netcdf/hyrax_1.9_release/ src/modules/fileout_netcdf
+^/branch/ugrid_functions/hyrax_1.9_release/ src/modules/ugrid_functions
 
 

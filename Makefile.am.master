@@ -122,6 +122,7 @@ olfs-compile:
 olfs-install: check-webapps-privileges olfs-compile
 	@if test -d "$(TOMCAT_DIR)/webapps"; then \
 		(echo "OLFS installing to: $(TOMCAT_DIR)/webapps"; \
+		 rm -rf $(TOMCAT_DIR)/webapps/opendap* $(TOMCAT_DIR)/content/opendap  2>&1 ; \
 		 cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps 2>&1 ; \
 		 echo "%%% install status: $$?") | tee -a make.olfs.log; \
 	else \

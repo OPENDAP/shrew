@@ -35,7 +35,7 @@ hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
-gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1-10.0
+gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
 ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.3
 else
 libdap_arg = $(prefix_arg) $(developer_arg)

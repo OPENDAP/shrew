@@ -55,8 +55,7 @@ fi
 AM_CONDITIONAL([BUILD_OSX], [test "x$build_osx" = "xtrue"])
 
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE([-Wall foreign])
-AM_INIT_AUTOMAKE([tar-ustar])
+AM_INIT_AUTOMAKE([-Wall foreign tar-ustar])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 

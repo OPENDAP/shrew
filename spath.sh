@@ -25,16 +25,13 @@ export PATH=$prefix/bin:$PATH
 # We do need this for icu-3.6 on AWS EC2 instances. jhrg 3/5/13
 export LD_LIBRARY_PATH=$prefix/lib:$prefix/deps/icu-3.6/lib
 
-# This somewhat hokey test for tomcat is less likely to fail than 
-# the previous hacks... jhrg 6/13/13
-# Assume we're part of shrew and that tomcat will be (or has been) 
-# installed from the dependencies directory.
-tc=`ls -1 $prefix/src/dependencies/downloads/apache-tomcat-*`
+# I removed the apache tomcat dist from dependencies/downloads 
+# because it was causing bloat. Assume that a typical nightly build
+# has both the tar.gz and directory for tomcat. jhrg 4/28/14
+tc=`ls -d -1 $prefix/apache-tomcat-* | grep -v '.*\.tar\.gz'`
 if test -n "$tc"
 then
-    tc=${tc##/*/}
-    tc=${tc%.tar.gz}
-    export TOMCAT_DIR=$prefix/$tc
+    export TOMCAT_DIR=$tc
     export CATALINA_HOME=$TOMCAT_DIR
 else
     echo "Can't find tomcat..."

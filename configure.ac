@@ -17,7 +17,7 @@ dnl configure.
 
 AC_ARG_ENABLE([developer],
 [AS_HELP_STRING([--enable-developer],
-[Build a developer (-g3 -O0) version of Hyrax 1.7.0 (default is no)])],
+[Build a developer (-g3 -O0) version of Hyrax (default is no)])],
 [case "${enableval}" in
        yes) build_hyrax_developer=true ;;
        no)  build_hyrax_developer=false ;;
@@ -55,8 +55,8 @@ fi
 AM_CONDITIONAL([BUILD_OSX], [test "x$build_osx" = "xtrue"])
 
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE([-Wall foreign])
-AM_INIT_AUTOMAKE([tar-ustar])
+AM_INIT_AUTOMAKE([-Wall foreign tar-ustar])
+dnl AM_INIT_AUTOMAKE([tar-ustar])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
 
@@ -77,21 +77,24 @@ fi
 AC_SUBST([bes_group])
 AC_MSG_NOTICE(Set the BES group to $bes_group)
 
-if ls -1d $prefix/apache-tomcat-*
-then
-    tc=`ls -1d $prefix/apache-tomcat-*`
-    TOMCAT_DIR=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
-else
-    AC_MSG_WARN(I could not find an instance of Tomcat in the directory $prefix)
-fi
+dnl Removed this. It was overriding the env variable and that was
+dnl very confusing. jhrg 6/13/13
+dnl
+dnl if ls -1d $prefix/apache-tomcat-*
+dnl then
+dnl     tc=`ls -1d $prefix/apache-tomcat-*`
+dnl     TOMCAT_DIR=`echo $tc |  sed 's@.a\(apache-.*\)/@\1@'`
+dnl else
+dnl     AC_MSG_WARN(I could not find an instance of Tomcat in the directory $prefix)
+dnl fi
 
-if test -n "$TOMCAT_DIR"
-then
-    AC_SUBST([TOMCAT_DIR])
-    AC_MSG_NOTICE(Set the TOMCAT_DIR to $TOMCAT_DIR)
-else
-    AC_MSG_WARN(I did not set TOMCAT_DIR to any value)
-fi
+dnl if test -n "$TOMCAT_DIR"
+dnl then
+dnl     AC_SUBST([TOMCAT_DIR])
+dnl     AC_MSG_NOTICE(Set the TOMCAT_DIR to $TOMCAT_DIR)
+dnl else
+dnl     AC_MSG_WARN(I did not set TOMCAT_DIR to any value)
+dnl fi
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

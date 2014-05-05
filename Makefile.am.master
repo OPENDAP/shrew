@@ -11,15 +11,15 @@ SUBDIRS = src/libdap src/bes src/modules
 # Modify as needed...
 
 if BUILD_HYRAX_DEVELOPER
-developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align -fno-defer-pop" LDFLAGS=-g
+developer_arg = --enable-developer CXXFLAGS="-g3 -O0 -W -Wall -Wcast-align" LDFLAGS=-g
 else
 developer_arg=
 endif
 
 prefix_arg = --prefix=$(prefix)
 
-# olfs_version_arg = -DHYRAX_VERSION=1.8.2 -DOLFS_VERSION=1.9.3
-olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
+# olfs_version_arg = -DHYRAX_VERSION= -DOLFS_VERSION=
+olfs_version_arg = -DHYRAX_VERSION=nightly_build
 
 # We have two different sets of these Makefile variables for OSX and Linux.
 # Doing this simplifes managing checkins and the like.
@@ -29,36 +29,34 @@ olfs_version_arg = -DHYRAX_VERSION=1.8.9.alpha
 
 if BUILD_OSX
 libdap_arg = $(prefix_arg) $(developer_arg)
-# --with-gdal=$(prefix)/deps/gdal...
-# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
 bes_arg = $(prefix_arg) $(developer_arg)
-netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
-hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.3.1.1
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.10
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
 icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
+ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.3
 else
-libdap_arg = $(prefix_arg)
-# --with-gdal=$(prefix)/deps/gdal...
-# --with-gridfields=$(prefix)/deps/gridfields-1.0.1
-bes_arg = $(prefix_arg)
-netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.1.2
-hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.8
+libdap_arg = $(prefix_arg) $(developer_arg)
+bes_arg = $(prefix_arg) $(developer_arg)
+netcdf_arg =  --with-netcdf=$(prefix)/deps/netcdf-4.3.1.1
+hdf4_arg =  --with-hdf4=$(prefix)/deps/hdf-4.2.10
 hdf5_arg =  --with-hdf5=$(prefix)/deps/hdf5-1.8.6
-icu_arg =  --with-icu-prefix=$(prefix)/deps/icu-3.6
+icu_arg =
 fits_arg =  --with-cfits=$(prefix)/deps/cfitsio
 gdal_arg =  --with-gdal=$(prefix)/deps/gdal-1.10.0
+ugrid_arg = --with-gridfields=$(prefix)/deps/gridfields-1.0.3
 endif
 
-modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_arg = $(prefix_arg) $(developer_arg) $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg) $(ugrid_arg)
 
 # Cannot use the --enable-developer stuff with distcheck because the 
 # CXXFLAGS="-O0 ..." confuses configure. jhrg 12/31/12
 # Cannot use --prefix with distcheck because it deletes modules when
 # the tests are done but we need the, e.g., netcdf_handler to stick
 # around for the ncml_module check and distcheck. jhrg 1/4/13
-modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg)
+modules_distcheck_arg = $(netcdf_arg) $(hdf4_arg) $(hdf5_arg) $(icu_arg) $(fits_arg) $(gdal_arg) $(ugrid_arg)
 
 # Print if we are building developer early in build
 .PHONY:
@@ -74,6 +72,10 @@ endif
 # Thus for the hyrax target, each of check-web..., daemon and olfs are
 # run at the same time while doe daemon, libdap, bes, ..., are all built one
 # after the other.
+
+.PHONY: universe
+universe: dependencies
+	$(MAKE) world
 
 .PHONY: world
 world: autoreconf 
@@ -109,30 +111,47 @@ depends-pkg:
 		echo "%%% mkPackage status: $$?" ) | tee make.$@.log
 
 .PHONY: olfs
-olfs: olfs-install
+olfs: olfs-check
 
 .PHONY: olfs-compile
 olfs-compile:
-	(cd src/olfs && ant $(olfs_version_arg) )
+	(cd src/olfs && ant $(olfs_version_arg); \
+         echo "%%% make status: $$?") 2>&1 | tee make.olfs.log
 
 .PHONY: olfs-install
 olfs-install: check-webapps-privileges olfs-compile
-	@if test ! -d "$(TOMCAT_DIR)/webapps"; then \
-		echo "ERROR: $(TOMCAT_DIR)/webapps is missing."; \
+	@if test -d "$(TOMCAT_DIR)/webapps"; then \
+		(echo "OLFS installing to: $(TOMCAT_DIR)/webapps"; \
+		 rm -rf $(TOMCAT_DIR)/webapps/opendap* $(TOMCAT_DIR)/content/opendap  2>&1 ; \
+		 cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps 2>&1 ; \
+		 echo "%%% install status: $$?") | tee -a make.olfs.log; \
 	else \
-		cp src/olfs/build/dist/*.war $(TOMCAT_DIR)/webapps;\
-		echo "OLFS installed to: " $(TOMCAT_DIR)/webapps; \
+		(echo "ERROR: $(TOMCAT_DIR)/webapps is missing."; \
+		 echo "%%% install status: 1") | tee -a make.olfs.log; \
 	fi
 
 .PHONY: olfs-check
-olfs-check:
-	@echo "Checking for Hyrax Service..."
-	@-curl http://localhost:8080/opendap/version;\
-	if test "$$?" -ne "0"; then \
-		echo "ERROR! Hyrax must be running at http://localhost:8080/opendap/ for these tests to work."; \
+olfs-check: start-hyrax
+	(echo "Running OLFS Tests."; \
+         cd src/olfs && ./make-check 2>&1; \
+         echo "%%% check status: $$?") | tee -a make.olfs.log;
+	-$(prefix)/bin/besctl stop
+	-$(TOMCAT_DIR)/bin/shutdown.sh
+
+# I switched to 'besctl kill' from ... stop because on some hosts
+# there were other instances of the bes kicking around that did not
+# get stopped and not starting the bes is a problem for these tests
+# which test the server end-to-end using curl as the client. jhrg 4/1/14
+.PHONY: start-hyrax
+start-hyrax: olfs-install
+	-$(prefix)/bin/besctl kill
+	-$(TOMCAT_DIR)/bin/shutdown.sh
+	$(prefix)/bin/besctl start
+	$(TOMCAT_DIR)/bin/startup.sh
+	-if test "x$$?" != "x0"; then \
+	    echo "FAIL: Could not start Hyrax" | tee -a make.olfs.log; \
 	else \
-		echo "Running OLFS Tests."; \
-		(cd src/olfs && ./make-check); \
+	    echo "Started Hyrax" | tee -a make.olfs.log; \
 	fi
 
 .PHONY: olfs-osx-package

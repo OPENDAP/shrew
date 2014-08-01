@@ -1,7 +1,7 @@
 ^/branch/hyrax-dependencies/hyrax_1.9_release/ src/dependencies
 ^/branch/libdap/hyrax_1.9_release/ src/libdap
 ^/branch/bes/hyrax_1.9_release/ src/bes
-^/branch/olfs/1.10 src/olfs
+^/branch/olfs/release/hyrax-1.9 src/olfs
 
 ^/branch/dap-server/hyrax_1.9_release/ src/modules/dap-server
 ^/branch/csv_handler/hyrax_1.9_release/ src/modules/csv_handler
@@ -18,6 +18,8 @@
 ^/branch/xml_data_handler/hyrax_1.9_release/ src/modules/xml_data_handler
 ^/branch/fileout_gdal/hyrax_1.9_release/ src/modules/fileout_gdal
 ^/branch/fileout_netcdf/hyrax_1.9_release/ src/modules/fileout_netcdf
+^/branch/fileout_json/hyrax_1.9_release/ src/modules/fileout_json
+^/trunk/fileout_json/ src/modules/fileout_json
 
 ^/branch/ugrid_functions/hyrax_1.9_release/ src/modules/ugrid_functions
 

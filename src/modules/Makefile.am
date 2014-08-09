@@ -10,7 +10,9 @@ FORMAT_READERS = netcdf_handler freeform_handler csv_handler \
 	hdf4_handler hdf5_handler fits_handler gdal_handler
 
 RESPONSE_BUILDERS = dap-server xml_data_handler fileout_netcdf \
-	fileout_gdal fileout_json
+	fileout_gdal
+
+# fileout_json
 
 PROCESSORS = ncml_module gateway_module ugrid_functions
 

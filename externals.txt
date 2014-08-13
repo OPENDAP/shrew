@@ -1,10 +1,13 @@
 ^/trunk/hyrax-dependencies/ src/dependencies
+
 ^/branch/libdap/dap4 src/libdap
 ^/branch/bes/dap4 src/bes
+
 ^/trunk/olfs/ src/olfs
 
+^/branch/csv_handler/dap4 src/modules/csv_handler
+
 ^/trunk/dap-server/ src/modules/dap-server
-^/trunk/csv_handler/ src/modules/csv_handler
 ^/trunk/freeform_handler/ src/modules/freeform_handler
 ^/trunk/netcdf_handler/ src/modules/netcdf_handler
 ^/trunk/hdf4_handler/ src/modules/hdf4_handler

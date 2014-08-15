@@ -6,13 +6,13 @@
 ^/trunk/olfs/ src/olfs
 
 ^/branch/csv_handler/dap4 src/modules/csv_handler
+^/branch/fits_handler/dap4 src/modules/fits_handler
 
 ^/trunk/dap-server/ src/modules/dap-server
 ^/trunk/freeform_handler/ src/modules/freeform_handler
 ^/trunk/netcdf_handler/ src/modules/netcdf_handler
 ^/trunk/hdf4_handler/ src/modules/hdf4_handler
 ^/trunk/hdf5_handler/ src/modules/hdf5_handler
-^/trunk/fits_handler/ src/modules/fits_handler
 ^/trunk/gdal_handler/ src/modules/gdal_handler
 
 ^/branch/ncml_module/dap4 src/modules/ncml_module

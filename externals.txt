@@ -9,14 +9,14 @@
 ^/branch/fits_handler/dap4 src/modules/fits_handler
 ^/branch/freeform_handler/dap4 src/modules/freeform_handler
 ^/branch/netcdf_handler/dap4 src/modules/netcdf_handler
+^/branch/gdal_handler/dap4 src/modules/gdal_handler
 
-^/branch/dap-server/dap4 src/modules/dap-server
 ^/trunk/hdf4_handler/ src/modules/hdf4_handler
 ^/trunk/hdf5_handler/ src/modules/hdf5_handler
-^/trunk/gdal_handler/ src/modules/gdal_handler
 
 ^/branch/ncml_module/dap4 src/modules/ncml_module
 ^/trunk/gateway_module/ src/modules/gateway_module
+^/trunk/dap-server/ src/modules/dap-server
 
 ^/trunk/xml_data_handler/ src/modules/xml_data_handler
 ^/trunk/fileout_gdal/ src/modules/fileout_gdal

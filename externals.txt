@@ -11,10 +11,13 @@
 ^/branch/netcdf_handler/dap4 src/modules/netcdf_handler
 ^/branch/gdal_handler/dap4 src/modules/gdal_handler
 
+^/branch/ncml_module/dap4 src/modules/ncml_module
+
+^/branch/fileout_json/dap4 src/modules/fileout_json
+
 ^/trunk/hdf4_handler/ src/modules/hdf4_handler
 ^/trunk/hdf5_handler/ src/modules/hdf5_handler
 
-^/branch/ncml_module/dap4 src/modules/ncml_module
 ^/trunk/gateway_module/ src/modules/gateway_module
 ^/trunk/dap-server/ src/modules/dap-server
 

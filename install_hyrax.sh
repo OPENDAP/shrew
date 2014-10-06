@@ -139,12 +139,18 @@ do_command "tar -xzf apache-tomcat-7.0.55.tar.gz"
 do_command "tar -xzf olfs-1.11.3-webapp.tgz"
 do_command "cp olfs-1.11.3-webapp/opendap.war apache-tomcat-7.0.55/webapps/"
 
+# I decided to remove this and have people set the port in/with a 
+# separate script. The best way to so this is to modify the /etc/sysconfig/
+# iptables configuration file. But, if I put that in here and this is 
+# run more than once, that file will be mangled (unless an 'it is already
+# modified test is added' which seems like a bit too much).
+#
 # open port 8080 on this VM and restart iptables
 # iptables -A INPUT -m state --state NEW -p tcp --dport 8080 -j ACCEPT
-if test "$verbose" = "yes"
-then
-    echo  "Undating iptables so that port 8080 is usable"
-fi
+# if test "$verbose" = "yes"
+# then
+#     echo  "Undating iptables so that port 8080 is usable"
+# fi
 
-do_command "/etc/init.d/iptables restart"
+# do_command "/etc/init.d/iptables restart"
 

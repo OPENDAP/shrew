@@ -113,7 +113,9 @@ do_command "rpm --install $quiet *.rpm"
 do_command "yum --assumeyes $quiet install java-1.6.0-openjdk"
 
 # Get tomcat packages in a tar ball; we should switch to the RPM package.
-tomcat=http://mirror.symnds.com/software/Apache/tomcat/tomcat-7/v7.0.55/bin/apache-tomcat-7.0.55.tar.gz
+tomcat=http://apache.arvixe.com/tomcat/tomcat-7/v7.0.56/bin/apache-tomcat-7.0.56.tar.gz
+tc_base=`echo $tomcat | sed 's@.*\(apache-tomcat-.*\)\.tar\.gz@\1@g'`
+echo "tc_base: $tc_base"
 
 if test "$verbose" = "yes"
 then
@@ -123,6 +125,7 @@ do_command "curl --remote-name $silent $tomcat"
 
 # And the opendap.war file
 opendap=http://www.opendap.org/pub/olfs/olfs-1.11.3-webapp.tgz
+olfs_base=`echo $opendap | sed 's@.*\(olfs-.*-webapp\)\.tgz@\1@g'`
 if test "$verbose" = "yes"
 then
     echo "Copying package $opendap"
@@ -135,22 +138,6 @@ then
     echo  "Unpacking tomcat and installing the OLFS servlet for Hyrax"
 fi
 
-do_command "tar -xzf apache-tomcat-7.0.55.tar.gz"
-do_command "tar -xzf olfs-1.11.3-webapp.tgz"
-do_command "cp olfs-1.11.3-webapp/opendap.war apache-tomcat-7.0.55/webapps/"
-
-# I decided to remove this and have people set the port in/with a 
-# separate script. The best way to so this is to modify the /etc/sysconfig/
-# iptables configuration file. But, if I put that in here and this is 
-# run more than once, that file will be mangled (unless an 'it is already
-# modified test is added' which seems like a bit too much).
-#
-# open port 8080 on this VM and restart iptables
-# iptables -A INPUT -m state --state NEW -p tcp --dport 8080 -j ACCEPT
-# if test "$verbose" = "yes"
-# then
-#     echo  "Undating iptables so that port 8080 is usable"
-# fi
-
-# do_command "/etc/init.d/iptables restart"
-
+do_command "tar -xzf $tc_base.tar.gz"
+do_command "tar -xzf $olfs_base.tgz"
+do_command "cp $olfs_base/opendap.war $tc_base/webapps/"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.hdf">
+    <Dimension name="Latitude" size="4"/>
+    <Dimension name="Longitude" size="8"/>
+    <Float32 name="temperature">
+        <Dim name="/Latitude"/>
+        <Dim name="/Longitude"/>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>5bdeef6d</Value>
+        </Attribute>
+    </Float32>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_V2.18</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Float32 temperature[Latitude = 4][Longitude = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
+

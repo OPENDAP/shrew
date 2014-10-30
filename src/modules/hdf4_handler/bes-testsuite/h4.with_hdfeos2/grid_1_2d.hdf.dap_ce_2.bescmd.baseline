@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.hdf">
+    <Float32 name="temperature">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <Attribute name="coordinates" type="String">
+            <Value>Latitude Longitude</Value>
+        </Attribute>
+        <Attribute name="long_name" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>f58dd19a</Value>
+        </Attribute>
+    </Float32>
+    <Float64 name="Latitude">
+        <Dim size="2"/>
+        <Attribute name="long_name" type="String">
+            <Value>Latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>4216ee54</Value>
+        </Attribute>
+    </Float64>
+    <Float64 name="Longitude">
+        <Dim size="4"/>
+        <Attribute name="long_name" type="String">
+            <Value>Longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            <Value>e2d9aa48</Value>
+        </Attribute>
+    </Float64>
+    <Attribute name="HDF_GLOBAL" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_V2.18</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+Float32 temperature[2][4] = {{10, 10, 10, 10},{12, 12, 12, 12}};
+Float64 Latitude[2] = {3.5, 1.5};
+Float64 Longitude[4] = {1.5, 3.5, 5.5, 7.5};
+

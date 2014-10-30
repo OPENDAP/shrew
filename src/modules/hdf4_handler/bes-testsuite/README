@@ -1,0 +1,7 @@
+To test the CF option, do the following:
+./configure --with-hdf4=/hdf4 library path
+cp hdf4_handlerTest.at hdf4_handlerTest.at.orig
+cp hdf4_handlerTest.cf.at hdf4_handlerTest.at
+cp bes.with_hdfeos2.conf bes.conf
+make check
+cp hdf4_handlerTest.at.orig hdf4_handlerTest.at

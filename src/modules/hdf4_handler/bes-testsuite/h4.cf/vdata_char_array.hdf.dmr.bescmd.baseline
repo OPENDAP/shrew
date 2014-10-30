@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vdata_char_array.hdf">
+    <Dimension name="VDFDim0_vdata_Vdata2_characters_vdf_Fchar2_2d_array" size="12"/>
+    <String name="vdata_Vdata2_characters_vdf_Fchar2_2d_array">
+        <Dim name="/VDFDim0_vdata_Vdata2_characters_vdf_Fchar2_2d_array"/>
+    </String>
+    <String name="vdata_Vdata2_characters_vdf_Fchar2_array"/>
+    <Attribute name="Vdata_characters" type="Container">
+        <Attribute name="Vdata_field_Fchar_2d_array" type="String">
+            <Value>'abc'</Value>
+            <Value>'bcd'</Value>
+            <Value>'cde'</Value>
+            <Value>'def'</Value>
+            <Value>'efg'</Value>
+        </Attribute>
+        <Attribute name="Vdata_field_Fchar_array" type="String">
+            <Value>ABCDE</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Vdata2_characters" type="Container"/>
+</Dataset>

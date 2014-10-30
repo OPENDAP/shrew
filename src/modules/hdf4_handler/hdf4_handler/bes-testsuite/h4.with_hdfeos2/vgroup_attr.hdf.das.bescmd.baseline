@@ -1,5 +1,0 @@
-Attributes {
-    vgroup_test {
-        String vg_attr "vgroup";
-    }
-}

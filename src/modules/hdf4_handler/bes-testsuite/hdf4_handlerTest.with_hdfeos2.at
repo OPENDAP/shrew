@@ -56,6 +56,17 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap -M
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
+m4_define([_AT_BESCMD_DAP4DATA_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([bescmd])
+# Use the following AT_CHECK to generate baseline file.
+# AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - > $2 || true], [], [stdout], [stderr])
+
+# This is the original.
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CLEANUP])
+
 m4_define([AT_BESCMD_RESPONSE_TEST],
 [_AT_BESCMD_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
 ])
@@ -64,6 +75,9 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_TEST],
 [_AT_BESCMD_BINARYDATA_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
 ])
 
+m4_define([AT_BESCMD_DAP4DATA_RESPONSE_TEST],
+[_AT_BESCMD_DAP4DATA_TEST([$abs_srcdir/h4.with_hdfeos2/$1], [$abs_srcdir/h4.with_hdfeos2/$1.baseline])
+])
 
 # The same set of tests that the old default handler uses.
 AT_BESCMD_RESPONSE_TEST([S2000415.HDF.0.bescmd])
@@ -446,3 +460,12 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([tvset.hdf.data.bescmd])
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([tvset.hdf.s.data.bescmd])
 AT_BESCMD_RESPONSE_TEST([tvset.hdf.dds.bescmd])
 AT_BESCMD_RESPONSE_TEST([tvset.hdf.ddx.bescmd])
+
+# DAP4 test
+# Test HDF-EOS2 files.
+AT_BESCMD_RESPONSE_TEST([grid_1_2d.hdf.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.hdf.dap.bescmd])
+# comment out the following two tests now due to the memory leaking in DAP4 layer.
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.hdf.dap_ce_1.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST([grid_1_2d.hdf.dap_ce_2.bescmd])
+

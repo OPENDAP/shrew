@@ -13,13 +13,13 @@
 
 ^/branch/ncml_module/dap4 src/modules/ncml_module
 
+^/branch/dap-server/dap4 src/modules/dap-server
 ^/branch/fileout_json/dap4 src/modules/fileout_json
 
-^/trunk/hdf4_handler/ src/modules/hdf4_handler
-^/trunk/hdf5_handler/ src/modules/hdf5_handler
+^/branch/hdf4_handler/dap4 src/modules/hdf4_handler
+^/branch/hdf5_handler/dap4 src/modules/hdf5_handler
 
 ^/trunk/gateway_module/ src/modules/gateway_module
-^/trunk/dap-server/ src/modules/dap-server
 
 ^/trunk/xml_data_handler/ src/modules/xml_data_handler
 ^/trunk/fileout_gdal/ src/modules/fileout_gdal

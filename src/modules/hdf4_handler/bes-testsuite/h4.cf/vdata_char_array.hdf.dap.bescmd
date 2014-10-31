@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID ="some_unique_value" >
-    <setContainer name="c" space="catalog">/data/vdata_char_array.hdf</setContainer>
-    <define name="d">
-	<container name="c" />
-    </define>
-    <get type="dap" definition="d" />
-</request>
